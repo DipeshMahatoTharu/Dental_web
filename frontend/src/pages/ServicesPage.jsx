@@ -19,6 +19,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
     message: ''
   })
   const [bookingStatus, setBookingStatus] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const filteredServices = useMemo(() => {
     return SERVICES_DATA.filter((service) => {
@@ -48,16 +49,19 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
   async function handleBookingSubmit(e) {
     e.preventDefault()
+    setIsSubmitting(true)
     setBookingStatus('Submitting your virtual consultation request...')
     try {
       const response = await fetch('/api/contact/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: bookingForm.name,
-          phone: bookingForm.phone,
-          email: bookingForm.email || undefined,
-          message: `[Online Service: ${bookingForm.service}] [Platform: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message}`
+          name: bookingForm.name.trim(),
+          phone: bookingForm.phone.trim(),
+          email: bookingForm.email.trim() || undefined,
+          serviceInterest: bookingForm.service,
+          preferredTime: bookingForm.preferredTime,
+          message: `[Online Service: ${bookingForm.service}] [Platform: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message.trim()}`
         })
       })
       if (!response.ok) throw new Error('Request failed')
@@ -72,98 +76,138 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       })
       setBookingStatus('Success! Your virtual consultation request is received. Our clinic team will send you the meeting link shortly.')
     } catch {
-      setBookingStatus('Please call us directly at +1 (555) 123-4567 while the server is unavailable.')
+      setBookingStatus('Notice: Please call our clinical reception directly at +1 (555) 123-4567 while digital dispatch queues.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-background animate-fadeIn">
+    <div className="min-h-screen bg-background text-on-background">
       {/* Top Banner / Breadcrumb & Hero */}
-      <section className="relative overflow-hidden bg-primary py-16 text-white md:py-20">
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
-        <div className="relative mx-auto max-w-7xl px-5 md:px-10">
-          <nav className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/70">
+      <section className="relative overflow-hidden bg-primary py-12 text-white md:py-16">
+        <div className="mx-auto max-w-7xl px-5 md:px-10">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/70">
             <button 
+              type="button"
               onClick={() => onNavigate('home')} 
               className="hover:text-white transition flex items-center gap-1 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-sm">home</span>
+              <span className="material-symbols-outlined text-sm" aria-hidden="true">home</span>
               Home
             </button>
-            <span>/</span>
-            <span className="text-secondary-container">Online Services</span>
+            <span aria-hidden="true">/</span>
+            <span className="text-secondary-container">Online Clinical Services</span>
           </nav>
 
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-secondary-container/20 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-secondary-container border border-secondary-container/30">
-              <span className="h-2 w-2 rounded-full bg-secondary-container animate-ping"></span>
-              100% Online Dental Telehealth & Consultations
-            </div>
-            <h1 className="mt-4 font-heading text-3xl font-bold leading-tight md:text-5xl lg:text-6xl">
-              Virtual Dental Care & Expert Consultations
-            </h1>
-            <p className="mt-4 text-base leading-7 text-white/80 md:text-lg">
-              Get professional diagnoses, second opinions, digital smile evaluations, and electronic prescriptions directly from certified dentists — without leaving home.
-            </p>
-          </div>
+          <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
+            {/* Left Content */}
+            <div className="lg:col-span-7">
+              <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white border border-white/20">
+                <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">videocam</span>
+                Online Dental Telehealth & Specialist Consultations
+              </div>
+              <h1 className="mt-3 font-heading text-2xl font-bold leading-tight md:text-4xl lg:text-5xl">
+                Virtual Dental Care & Diagnostic Consultations
+              </h1>
+              <p className="mt-3 text-sm leading-relaxed text-white/80 md:text-base">
+                Connect directly with licensed dental surgeons for oral exams, symptom analysis, radiograph review, and official electronic prescriptions without leaving home.
+              </p>
 
-          {/* Quick Stats Banner */}
-          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl border-t border-white/15 pt-6 text-xs text-white/85">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary-container text-xl">videocam</span>
-              <span>HD Video Sessions</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary-container text-xl">prescriptions</span>
-              <span>Valid e-Prescriptions</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary-container text-xl">timer</span>
-              <span>Same-Day Availability</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary-container text-xl">lock</span>
-              <span>HIPAA Compliant & Private</span>
-            </div>
-          </div>
+              {/* Quick Clinical Guarantees */}
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-white/15 pt-5 text-xs text-white/85">
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">videocam</span>
+                  <span>HD Video Calls</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">prescriptions</span>
+                  <span>Digital e-Rx</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">timer</span>
+                  <span>Same-Day Slots</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">lock</span>
+                  <span>HIPAA Encrypted</span>
+                </div>
+              </div>
 
-          {/* Search Bar */}
-          <div className="mt-8 max-w-2xl">
-            <div className="relative flex items-center">
-              <span className="material-symbols-outlined absolute left-4 text-gray-400">search</span>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search online services (e.g. video consultation, second opinion, emergency triage, aligners)..."
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-12 py-3.5 text-white placeholder-white/60 backdrop-blur-md outline-none focus:border-secondary-container focus:bg-white/20 transition text-sm"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-4 text-xs font-bold uppercase text-white/70 hover:text-white cursor-pointer"
-                >
-                  Clear
-                </button>
-              )}
+              {/* Search Bar */}
+              <div className="mt-6">
+                <div className="relative flex items-center">
+                  <span className="material-symbols-outlined absolute left-3.5 text-white/50 text-lg" aria-hidden="true">search</span>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search clinical services (e.g. video consultation, second opinion, toothache triage)..."
+                    aria-label="Search clinical services"
+                    className="w-full rounded-lg border border-white/20 bg-white/10 pl-10 pr-16 py-2.5 text-white placeholder-white/60 outline-none focus:border-secondary-container focus:bg-white/20 transition text-xs md:text-sm"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 text-xs font-bold uppercase text-white/70 hover:text-white cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Video Consulting Image Card */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-xl border border-white/20 bg-white/5 p-2.5 shadow-2xl backdrop-blur-sm">
+                <div className="relative overflow-hidden rounded-lg">
+                  <img
+                    src="/images/video-consulting.jpg"
+                    alt="Licensed dentist conducting live telehealth video consultation with patient"
+                    className="h-64 sm:h-72 lg:h-80 w-full object-cover rounded-lg"
+                  />
+                  <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-md bg-primary/90 backdrop-blur px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white border border-white/20">
+                    <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">videocam</span>
+                    Live Telehealth Consultation
+                  </div>
+                </div>
+
+                <div className="p-3 bg-white/10 rounded-lg mt-2.5 border border-white/10 flex items-center justify-between text-xs text-white">
+                  <div>
+                    <strong className="block font-heading text-xs font-bold">Encrypted Telehealth Session</strong>
+                    <span className="text-[10px] text-white/70">Dr. Robert Vance, DDS & Clinical Directors</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate('consultation')}
+                    className="rounded-md bg-secondary px-3 py-1.5 text-[11px] font-bold uppercase text-white hover:bg-secondary-container transition cursor-pointer flex items-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-sm" aria-hidden="true">forum</span>
+                    Doctor Portal
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Category Filter Pills */}
-      <section className="sticky top-16 z-30 border-b border-surface-container bg-white/95 backdrop-blur shadow-sm">
-        <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-5 py-3.5 scrollbar-none md:px-10">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-400 shrink-0 mr-2">
+      <section className="sticky top-14 z-30 border-b border-surface-container bg-white/95 backdrop-blur shadow-xs">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-5 py-3 scrollbar-none md:px-10">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-500 shrink-0 mr-2">
             Filter:
           </span>
           {SERVICE_CATEGORIES.map((cat) => (
             <button
               key={cat}
+              type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition shrink-0 cursor-pointer ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition shrink-0 cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-primary text-white shadow-sm'
+                  ? 'bg-primary text-white shadow-xs'
                   : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
               }`}
             >
@@ -174,40 +218,42 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       </section>
 
       {/* Services Grid */}
-      <section className="py-14 md:py-18">
+      <section className="py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary">
-                {selectedCategory === 'All Online Services' ? 'Available Online Consultations' : selectedCategory}
+                {selectedCategory === 'All Online Services' ? 'Available Clinical Services' : selectedCategory}
               </h2>
-              <p className="mt-1 text-sm text-on-surface-variant">
+              <p className="mt-1 text-xs text-on-surface-variant">
                 Showing {filteredServices.length} online consultation {filteredServices.length === 1 ? 'service' : 'services'}
               </p>
             </div>
             
             <button
+              type="button"
               onClick={() => onNavigate('home')}
               className="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-primary hover:text-primary-container cursor-pointer"
             >
-              <span className="material-symbols-outlined text-base">arrow_back</span>
+              <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
               Back to Home
             </button>
           </div>
 
           {filteredServices.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-surface-container-highest p-12 text-center bg-white">
-              <span className="material-symbols-outlined text-5xl text-gray-400 mb-3">search_off</span>
-              <h3 className="font-heading text-lg font-semibold text-primary">No online services found</h3>
-              <p className="mt-2 text-sm text-on-surface-variant">
+            <div className="rounded-xl border border-dashed border-surface-container-highest p-12 text-center bg-white">
+              <span className="material-symbols-outlined text-4xl text-gray-400 mb-2" aria-hidden="true">search_off</span>
+              <h3 className="font-heading text-base font-semibold text-primary">No clinical services match your query</h3>
+              <p className="mt-1 text-xs text-on-surface-variant">
                 Try adjusting your search keywords or selecting another category.
               </p>
               <button
+                type="button"
                 onClick={() => {
                   setSelectedCategory('All Online Services')
                   setSearchQuery('')
                 }}
-                className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold uppercase text-white hover:bg-primary-container transition cursor-pointer"
+                className="mt-4 rounded-lg bg-primary px-4 py-2 text-xs font-bold uppercase text-white hover:bg-primary-container transition cursor-pointer"
               >
                 Reset Filters
               </button>
@@ -217,31 +263,31 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               {filteredServices.map((service) => (
                 <article
                   key={service.id}
-                  className="group flex flex-col justify-between rounded-2xl border border-surface-container bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-xl"
+                  className="flex flex-col justify-between rounded-xl border border-surface-container bg-white p-6 shadow-xs transition hover:border-primary/40 hover:shadow-sm"
                 >
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-4">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-container-low text-primary transition duration-300 group-hover:bg-primary group-hover:text-white shadow-xs">
-                        <span className="material-symbols-outlined text-2xl">{service.icon}</span>
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-container-low text-primary shadow-xs">
+                        <span className="material-symbols-outlined text-2xl" aria-hidden="true">{service.icon}</span>
                       </span>
-                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200">
-                        Online Consultation
+                      <span className="rounded-md bg-surface-container px-2 py-0.5 text-[10px] font-bold text-slate-600">
+                        {service.category}
                       </span>
                     </div>
 
-                    <h3 className="font-heading text-lg font-bold text-primary group-hover:text-primary-container transition">
+                    <h3 className="font-heading text-base font-bold text-primary">
                       {service.title}
                     </h3>
-                    <p className="mt-2.5 text-xs leading-relaxed text-on-surface-variant">
+                    <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">
                       {service.shortDescription}
                     </p>
 
                     {/* Highlights */}
                     {service.highlights && (
-                      <div className="mt-4 space-y-1.5 border-t border-surface-container pt-3.5">
+                      <div className="mt-4 space-y-1.5 border-t border-surface-container pt-3">
                         {service.highlights.slice(0, 3).map((item, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-xs text-on-surface-variant">
-                            <span className="material-symbols-outlined text-secondary text-sm">check_circle</span>
+                            <span className="material-symbols-outlined text-secondary text-sm" aria-hidden="true">check_circle</span>
                             <span className="truncate">{item}</span>
                           </div>
                         ))}
@@ -249,10 +295,10 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                     )}
                   </div>
 
-                  <div className="mt-5 border-t border-surface-container pt-3.5">
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3.5">
+                  <div className="mt-5 border-t border-surface-container pt-3">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
                       <span className="flex items-center gap-1 font-medium">
-                        <span className="material-symbols-outlined text-sm text-primary">videocam</span>
+                        <span className="material-symbols-outlined text-sm text-primary" aria-hidden="true">videocam</span>
                         {service.duration.split(' ')[0]} {service.duration.split(' ')[1]}
                       </span>
                       <span className="font-bold text-secondary">
@@ -262,16 +308,18 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
                     <div className="grid grid-cols-2 gap-2">
                       <button
+                        type="button"
                         onClick={() => setModalService(service)}
                         className="rounded-lg border border-surface-container px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary hover:text-primary transition text-center cursor-pointer"
                       >
-                        Learn More
+                        Details
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleCardBook(service)}
                         className="rounded-lg bg-primary px-3 py-2 text-xs font-bold uppercase text-white hover:bg-primary-container transition text-center shadow-xs cursor-pointer"
                       >
-                        Book Online
+                        Book Virtual
                       </button>
                     </div>
                   </div>
@@ -283,12 +331,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       </section>
 
       {/* How Online Consulting Works */}
-      <section className="bg-surface-container-low py-16">
+      <section className="bg-surface-container-low py-14 border-t border-surface-container">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-wider text-secondary">Simple 4-Step Process</span>
-            <h2 className="font-heading text-3xl font-bold text-primary mt-2">How Our Online Consultations Work</h2>
-            <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-secondary" />
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">How Our Virtual Consultations Work</h2>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -302,31 +349,31 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               {
                 step: '02',
                 icon: 'upload_file',
-                title: 'Share Info / Scans',
-                desc: 'Upload dental X-rays, smile photos, or describe your symptoms beforehand so the dentist can prepare.'
+                title: 'Share Info or Scans',
+                desc: 'Upload dental X-rays, smile photos, or describe your symptoms beforehand so the doctor can prepare.'
               },
               {
                 step: '03',
                 icon: 'video_chat',
                 title: '1-on-1 Video Call',
-                desc: 'Join your secure video consultation with a senior dentist for a live visual exam and expert diagnosis.'
+                desc: 'Join your secure video consultation with a senior dental surgeon for a live visual exam and clinical assessment.'
               },
               {
                 step: '04',
                 icon: 'assignment_turned_in',
-                title: 'Rx & Treatment Plan',
-                desc: 'Receive digital prescriptions, itemized second opinion reports, and care recommendations via PDF.'
+                title: 'Rx & Care Summary',
+                desc: 'Receive digital e-prescriptions, itemized second opinion reports, and care recommendations via PDF.'
               }
             ].map((item, idx) => (
-              <div key={idx} className="relative rounded-2xl bg-white p-6 shadow-sm border border-surface-container">
-                <span className="text-3xl font-black text-secondary/20 font-heading absolute top-4 right-4">
+              <div key={idx} className="relative rounded-xl bg-white p-6 shadow-xs border border-surface-container">
+                <span className="text-2xl font-bold text-secondary/20 font-heading absolute top-4 right-4">
                   {item.step}
                 </span>
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-white mb-4 shadow-sm">
-                  <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white mb-3 shadow-xs">
+                  <span className="material-symbols-outlined text-xl" aria-hidden="true">{item.icon}</span>
                 </span>
-                <h3 className="font-heading font-bold text-base text-primary">{item.title}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">{item.desc}</p>
+                <h3 className="font-heading font-bold text-sm text-primary">{item.title}</h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-on-surface-variant">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -334,15 +381,14 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       </section>
 
       {/* Frequently Asked Questions */}
-      <section className="py-16 bg-white">
+      <section className="py-14 bg-white">
         <div className="mx-auto max-w-4xl px-5 md:px-10">
           <div className="text-center mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Telehealth FAQ</span>
-            <h2 className="font-heading text-3xl font-bold text-primary mt-2">Frequently Asked Questions</h2>
-            <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-secondary" />
+            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Telehealth Guidelines</span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Frequently Asked Questions</h2>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             {SERVICES_FAQ.map((faq, idx) => {
               const isOpen = openFaq === idx
               return (
@@ -351,16 +397,17 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   className="rounded-xl border border-surface-container overflow-hidden transition"
                 >
                   <button
+                    type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between p-4.5 text-left font-semibold text-primary hover:bg-surface-container-low transition cursor-pointer text-sm"
+                    className="w-full flex items-center justify-between p-4 text-left font-semibold text-primary hover:bg-surface-container-low transition cursor-pointer text-xs md:text-sm"
                   >
                     <span>{faq.q}</span>
-                    <span className="material-symbols-outlined text-secondary transition-transform duration-300 transform">
+                    <span className="material-symbols-outlined text-secondary text-base" aria-hidden="true">
                       {isOpen ? 'expand_less' : 'expand_more'}
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 text-xs leading-relaxed text-on-surface-variant bg-surface-container-low/40">
+                    <div className="px-4 pb-4 text-xs leading-relaxed text-on-surface-variant bg-surface-container-low/40">
                       {faq.a}
                     </div>
                   )}
@@ -372,72 +419,76 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       </section>
 
       {/* Direct Online Booking Form */}
-      <section id="online-booking-section" className="bg-surface-container-low py-16">
-        <div className="mx-auto max-w-4xl px-5 md:px-10">
-          <div className="rounded-2xl bg-white p-8 md:p-12 shadow-xl border border-surface-container">
+      <section id="online-booking-section" className="bg-surface-container-low py-14 border-t border-surface-container">
+        <div className="mx-auto max-w-3xl px-5 md:px-10">
+          <div className="rounded-xl bg-white p-6 md:p-10 shadow-xs border border-surface-container">
             <div className="text-center max-w-xl mx-auto mb-8">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-container/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary">
-                <span className="material-symbols-outlined text-sm">video_camera_front</span>
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-secondary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary border border-secondary/20">
+                <span className="material-symbols-outlined text-sm" aria-hidden="true">video_camera_front</span>
                 Online Appointment
               </span>
-              <h2 className="font-heading text-3xl font-bold text-primary mt-2">Book Your Online Consultation</h2>
-              <p className="mt-2 text-xs text-on-surface-variant">
+              <h2 className="font-heading text-2xl font-bold text-primary mt-2">Schedule a Virtual Consultation</h2>
+              <p className="mt-1 text-xs text-on-surface-variant">
                 Select your service and preferred video meeting platform. Our team will email you the direct meeting link and confirmed time.
               </p>
             </div>
 
             <form onSubmit={handleBookingSubmit} className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="service-book-name" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
                     Your Full Name *
                   </label>
                   <input
+                    id="service-book-name"
                     type="text"
                     required
-                    placeholder="e.g. Alex Morgan"
+                    placeholder="Your Name"
                     value={bookingForm.name}
                     onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-3.5 py-2.5 text-xs outline-primary focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="service-book-phone" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
                     Phone / WhatsApp Number *
                   </label>
                   <input
+                    id="service-book-phone"
                     type="tel"
                     required
                     placeholder="+1 (555) 000-0000"
                     value={bookingForm.phone}
                     onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-3.5 py-2.5 text-xs outline-primary focus:bg-white"
                   />
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="service-book-email" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
                     Email Address *
                   </label>
                   <input
+                    id="service-book-email"
                     type="email"
                     required
-                    placeholder="alex@example.com"
+                    placeholder="patient@example.com"
                     value={bookingForm.email}
                     onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-3.5 py-2.5 text-xs outline-primary focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="service-book-service" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
                     Online Service *
                   </label>
                   <select
+                    id="service-book-service"
                     value={bookingForm.service}
                     onChange={(e) => setBookingForm({ ...bookingForm, service: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-xs outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-3.5 py-2.5 text-xs outline-primary focus:bg-white"
                   >
                     {SERVICES_DATA.map((s) => (
                       <option key={s.id} value={s.title}>
@@ -447,45 +498,48 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="service-book-platform" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
                     Video Platform *
                   </label>
                   <select
+                    id="service-book-platform"
                     value={bookingForm.platform}
                     onChange={(e) => setBookingForm({ ...bookingForm, platform: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-xs outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-3.5 py-2.5 text-xs outline-primary focus:bg-white"
                   >
-                    <option value="Google Meet">Google Meet (Link sent via email)</option>
-                    <option value="Zoom">Zoom (Meeting ID & Passcode)</option>
-                    <option value="WhatsApp Video">WhatsApp Video Call</option>
+                    <option value="Google Meet">Google Meet</option>
+                    <option value="Zoom">Zoom</option>
+                    <option value="WhatsApp Video">WhatsApp Video</option>
                     <option value="Phone Call">Audio Phone Call</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
-                  Describe Symptoms, Questions, or Dental History *
+                <label htmlFor="service-book-message" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
+                  Describe Symptoms or Questions *
                 </label>
                 <textarea
+                  id="service-book-message"
                   required
                   rows={3}
-                  placeholder="Describe your symptoms, tooth location, pain level, or previous treatments. You can share scans during the call..."
+                  placeholder="Describe your symptoms, tooth location, pain level, or previous treatments. You can share radiographs during the call..."
                   value={bookingForm.message}
                   onChange={(e) => setBookingForm({ ...bookingForm, message: e.target.value })}
-                  className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                  className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-3.5 py-2.5 text-xs outline-primary focus:bg-white"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-primary py-3.5 font-semibold text-white shadow-lg transition hover:bg-primary-container cursor-pointer text-sm"
+                disabled={isSubmitting}
+                className="w-full rounded-lg bg-primary py-3 text-xs font-bold uppercase tracking-wider text-white shadow-xs transition hover:bg-primary-container disabled:opacity-60 cursor-pointer"
               >
-                Schedule Virtual Consultation
+                {isSubmitting ? 'Transmitting Booking...' : 'Schedule Virtual Consultation'}
               </button>
 
               {bookingStatus && (
-                <p className="mt-3 text-center text-xs font-semibold text-secondary">
+                <p className="mt-2 text-center text-xs font-medium text-primary">
                   {bookingStatus}
                 </p>
               )}

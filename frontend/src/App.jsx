@@ -1,93 +1,60 @@
 import { useEffect, useState } from 'react'
 import { ServicesPage } from './pages/ServicesPage'
-import { AboutPage } from './pages/AboutPage'
-import { GalleryPage } from './pages/GalleryPage'
-import { ArticlesPage } from './pages/ArticlesPage'
-import { ContactPage } from './pages/ContactPage'
-import { DoctorConsultationPage } from './pages/DoctorConsultationPage'
-import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
-import { TermsConditionsPage } from './pages/TermsConditionsPage'
 import { ServiceModal } from './components/ServiceModal'
 import { SERVICES_DATA } from './data/servicesData'
 
 const heroImage = '/images/hero-clinic.jpg'
+const dentistImage = '/images/dentist.jpg'
+const equipmentImage = '/images/equipment.jpg'
+const receptionImage = '/images/reception.jpg'
 
-const CLINICAL_PILLARS = [
-  {
-    icon: 'medical_services',
-    title: 'Comprehensive General Dentistry',
-    text: 'Preventive examinations, digital radiography, gentle cleanings, and conservative restorative treatments for patients of all ages.'
-  },
-  {
-    icon: 'radiology',
-    title: 'Digital Radiograph Triage',
-    text: 'Low-radiation panoramic and periapical imaging combined with specialist second opinions on external scans.'
-  },
-  {
-    icon: 'sanitizer',
-    title: 'Hospital-Grade Sterilization',
-    text: 'Class-B vacuum autoclaves, biological spore testing, and sealed surgical packaging for maximum patient safety.'
-  },
-  {
-    icon: 'receipt_long',
-    title: 'Transparent Written Estimates',
-    text: 'Clear, itemized procedure estimates provided prior to any clinical intervention, with no unexpected fees.'
-  }
+const benefits = [
+  ['videocam', 'Online Teledentistry Specialists', 'Connect 1-on-1 with certified senior dental consultants via private video call.'],
+  ['prescriptions', 'Digital e-Prescriptions', 'Receive certified digital prescriptions for pain relief, antibiotics, and special mouthwashes.'],
+  ['policy', 'Independent Second Opinions', 'Unbiased review of external dental X-rays, 3D scans, and treatment plans before surgery.'],
+  ['speed', 'Fast & Convenient Care', 'Zero clinic travel or waiting room delays. Same-day virtual appointments available.'],
 ]
 
-const CLINICAL_DOCTORS_PREVIEW = [
-  {
-    name: 'Dr. Robert Vance, DDS',
-    role: 'Lead Dental Surgeon & Clinical Director',
-    specialty: 'Restorative Care & Dental Implants',
-    exp: '18+ Years Experience'
-  },
-  {
-    name: 'Dr. Elena Rostova, DMD',
-    role: 'Senior Endodontist & Diagnostics',
-    specialty: 'Microscopic Root Canal Therapy & Pain Triage',
-    exp: '14+ Years Experience'
-  },
-  {
-    name: 'Dr. Marcus Thorne, BDS, MSc',
-    role: 'Orthodontic & Aesthetic Consultant',
-    specialty: 'Clear Aligners & Conservative Aesthetics',
-    exp: '12+ Years Experience'
-  }
+const testimonials = [
+  ['SH', 'Sarah Henderson', 'Second Opinion Consultation', 'Got an online second opinion for a recommended root canal. The specialist saved me $1,200 by suggesting a conservative alternative.'],
+  ['MJ', 'Marcus Johnson', 'Emergency Teledentistry', 'Had intense tooth pain on a Sunday evening. Connected via video call in 10 minutes and had an e-prescription sent to my local pharmacy.'],
+  ['DL', 'David Lee', 'Virtual Smile Makeover', 'The 3D smile preview was incredible. I knew exactly what veneers would look like before making my decision.'],
 ]
 
-export function App() {
-  const [currentPage, setCurrentPage] = useState('home')
-  const [form, setForm] = useState({ name: '', phone: '', email: '', service: 'General Dental Examination', message: '' })
+const posts = [
+  ['Telehealth', 'How Online Dental Consultations Save You Time & Money', 'Learn how virtual triage works and when teledentistry is the smartest first step.', '/images/gum-care.jpg'],
+  ['Technology', 'The Future of Digital Smile Previews', 'How 3D simulation tools are changing aesthetic dentistry planning from home.', '/images/aligners.jpg'],
+  ['Parenting', 'Teething & Early Oral Habits: A Virtual Guide for Parents', 'Expert pediatric advice for managing teething discomfort and cavity prevention.', '/images/children-care.jpg'],
+]
+
+function Icon({ children, className = '' }) {
+  return <span className={`material-symbols-outlined ${className}`}>{children}</span>
+}
+
+function App() {
+  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'services'
+  const [form, setForm] = useState({ name: '', phone: '', message: '' })
   const [status, setStatus] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [selectedHomeModalService, setSelectedHomeModalService] = useState(null)
 
   // Listen to URL hash for direct links and browser back/forward buttons
   useEffect(() => {
     function handleHashChange() {
-      const hash = (window.location.hash || '').toLowerCase()
+      const hash = window.location.hash.toLowerCase()
       if (hash.includes('services')) {
         setCurrentPage('services')
-      } else if (hash.includes('about')) {
-        setCurrentPage('about')
-      } else if (hash.includes('gallery')) {
-        setCurrentPage('gallery')
-      } else if (hash.includes('articles') || hash.includes('blog')) {
-        setCurrentPage('articles')
-      } else if (hash.includes('contact')) {
-        setCurrentPage('contact')
-      } else if (hash.includes('consultation') || hash.includes('portal') || hash.includes('xray')) {
-        setCurrentPage('consultation')
-      } else if (hash.includes('privacy')) {
-        setCurrentPage('privacy')
-      } else if (hash.includes('terms')) {
-        setCurrentPage('terms')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
         setCurrentPage('home')
+        if (hash && hash !== '#' && hash !== '#home') {
+          const targetId = hash.replace('#', '')
+          setTimeout(() => {
+            const el = document.getElementById(targetId)
+            if (el) el.scrollIntoView({ behavior: 'smooth' })
+          }, 100)
+        }
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     handleHashChange()
@@ -95,33 +62,33 @@ export function App() {
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
-  function navigateTo(target) {
+  function navigateTo(target, sectionId = null) {
     setMobileMenuOpen(false)
-    const pageMap = {
-      home: '#/home',
-      services: '#/services',
-      about: '#/about',
-      gallery: '#/gallery',
-      articles: '#/articles',
-      blog: '#/articles',
-      contact: '#/contact',
-      consultation: '#/consultation',
-      privacy: '#/privacy',
-      terms: '#/terms'
+    if (target === 'services') {
+      window.location.hash = '#/services'
+      setCurrentPage('services')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      if (sectionId && sectionId !== 'home') {
+        window.location.hash = `#${sectionId}`
+        setCurrentPage('home')
+        setTimeout(() => {
+          const el = document.getElementById(sectionId)
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }, 80)
+      } else {
+        window.location.hash = '#home'
+        setCurrentPage('home')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
     }
-
-    const nextHash = pageMap[target] || '#/home'
-    window.location.hash = nextHash
-    setCurrentPage(target)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function handleSelectServiceForBooking(serviceTitle) {
-    navigateTo('contact')
+    navigateTo('home', 'contact')
     setForm((prev) => ({
       ...prev,
-      service: serviceTitle,
-      message: `I would like to schedule a consultation appointment for: ${serviceTitle}.`
+      message: `I would like to book an online consultation for: ${serviceTitle}.`
     }))
   }
 
@@ -131,697 +98,514 @@ export function App() {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    setIsSubmitting(true)
-    setStatus('Submitting your consultation inquiry...')
+    setStatus('Sending...')
     try {
       const response = await fetch('/api/contact/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          phone: form.phone.trim(),
-          email: form.email.trim() || undefined,
-          serviceInterest: form.service,
-          message: form.message.trim()
-        }),
+        body: JSON.stringify(form),
       })
       if (!response.ok) throw new Error('Request failed')
-      setForm({ name: '', phone: '', email: '', service: 'General Dental Examination', message: '' })
-      setStatus('Thank you. Your consultation request has been received. Our clinical desk will contact you shortly.')
+      setForm({ name: '', phone: '', message: '' })
+      setStatus('Thanks. Our dental consultant will contact you shortly.')
     } catch {
-      setStatus('Notice: Please call our clinic directly at +1 (555) 123-4567 while digital dispatch queues.')
-    } finally {
-      setIsSubmitting(false)
+      setStatus('Please call us directly while the API is unavailable.')
     }
   }
 
   return (
     <div className="min-h-screen bg-background text-on-background">
-      {/* Top Clinical Announcement Bar */}
-      <div className="bg-tertiary text-white py-2 px-5 text-xs border-b border-white/10 hidden sm:block">
-        <div className="mx-auto max-w-7xl flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-white/80">
-              <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">location_on</span>
-              1420 Medical Center Parkway, Suite 400
-            </span>
-            <span className="text-white/40">|</span>
-            <span className="flex items-center gap-1.5 text-white/80">
-              <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">schedule</span>
-              Mon - Fri: 08:00 AM - 06:00 PM | Sat: 09:00 AM - 02:00 PM
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-white/80">Clinical Desk:</span>
-            <a href="tel:+15551234567" className="font-bold text-secondary-container hover:underline">
-              +1 (555) 123-4567
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Navigation Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-surface-container bg-white/95 backdrop-blur">
-        <nav aria-label="Main Navigation" className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10">
-          <button
-            type="button"
-            onClick={() => navigateTo('home')}
-            className="font-heading text-xl font-bold text-primary flex items-center gap-2 cursor-pointer text-left"
+      {/* Fixed Navigation Header */}
+      <header className="fixed top-0 z-50 w-full border-b border-surface-container bg-white/95 backdrop-blur">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-10">
+          <button 
+            onClick={() => navigateTo('home')} 
+            className="font-heading text-2xl font-bold text-primary flex items-center gap-2 cursor-pointer"
           >
-            <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">dentistry</span>
-            <div>
-              <span className="block leading-tight">Rumidental</span>
-              <span className="block text-[10px] font-sans font-semibold uppercase tracking-wider text-slate-500">Dental Practice & Diagnostics</span>
-            </div>
+            <span className="material-symbols-outlined text-3xl text-secondary">dentistry</span>
+            Rumidental
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-6 lg:flex">
+          <div className="hidden items-center gap-8 md:flex">
             <button
-              type="button"
               onClick={() => navigateTo('home')}
-              className={`text-xs font-bold uppercase tracking-wider transition cursor-pointer py-1.5 ${
+              className={`text-sm font-semibold transition cursor-pointer ${
                 currentPage === 'home'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
+                  ? 'text-primary border-b-2 border-primary pb-0.5'
+                  : 'text-on-surface-variant hover:text-primary'
               }`}
             >
               Home
             </button>
             <button
-              type="button"
               onClick={() => navigateTo('services')}
-              className={`text-xs font-bold uppercase tracking-wider transition cursor-pointer py-1.5 ${
+              className={`text-sm font-semibold transition cursor-pointer ${
                 currentPage === 'services'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
+                  : 'text-on-surface-variant hover:text-primary'
               }`}
             >
               Services
             </button>
             <button
-              type="button"
-              onClick={() => navigateTo('about')}
-              className={`text-xs font-bold uppercase tracking-wider transition cursor-pointer py-1.5 ${
-                currentPage === 'about'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
+              onClick={() => navigateTo('home', 'about')}
+              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
-              About Practice
+              About
             </button>
             <button
-              type="button"
-              onClick={() => navigateTo('gallery')}
-              className={`text-xs font-bold uppercase tracking-wider transition cursor-pointer py-1.5 ${
-                currentPage === 'gallery'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
+              onClick={() => navigateTo('home', 'gallery')}
+              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
-              Facility Gallery
+              Gallery
             </button>
             <button
-              type="button"
-              onClick={() => navigateTo('articles')}
-              className={`text-xs font-bold uppercase tracking-wider transition cursor-pointer py-1.5 ${
-                currentPage === 'articles'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
+              onClick={() => navigateTo('home', 'blog')}
+              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
-              Articles
+              Blog
             </button>
             <button
-              type="button"
-              onClick={() => navigateTo('contact')}
-              className={`text-xs font-bold uppercase tracking-wider transition cursor-pointer py-1.5 ${
-                currentPage === 'contact'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
+              onClick={() => navigateTo('home', 'contact')}
+              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
               Contact
             </button>
           </div>
 
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden md:flex items-center gap-3">
             <button
-              type="button"
-              onClick={() => navigateTo('consultation')}
-              className={`rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wider transition cursor-pointer flex items-center gap-1.5 border ${
-                currentPage === 'consultation'
-                  ? 'bg-secondary text-white border-secondary'
-                  : 'bg-surface-container-low text-primary border-surface-container hover:bg-surface-container'
-              }`}
+              onClick={() => navigateTo('services')}
+              className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-primary-container flex items-center gap-1.5 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
-              Doctor Chat & X-Ray
-            </button>
-            <button
-              type="button"
-              onClick={() => navigateTo('contact')}
-              className="rounded-lg bg-primary px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-primary-container flex items-center gap-1.5 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-base" aria-hidden="true">calendar_month</span>
-              Book Visit
+              <span className="material-symbols-outlined text-base">video_camera_front</span>
+              Book Online
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Hamburger Button */}
           <button
-            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex items-center justify-center p-2 text-primary lg:hidden rounded-lg hover:bg-surface-container transition cursor-pointer"
+            className="flex items-center justify-center p-2 text-primary md:hidden rounded-lg hover:bg-surface-container transition cursor-pointer"
             aria-label="Toggle navigation menu"
-            aria-expanded={mobileMenuOpen}
           >
-            <span className="material-symbols-outlined text-2xl" aria-hidden="true">
+            <span className="material-symbols-outlined text-3xl">
               {mobileMenuOpen ? 'close' : 'menu'}
             </span>
           </button>
         </nav>
 
-        {/* Mobile Dropdown */}
+        {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="border-b border-surface-container bg-white px-6 py-5 lg:hidden shadow-md">
-            <div className="flex flex-col gap-3 text-xs font-bold uppercase tracking-wider">
+          <div className="border-b border-surface-container bg-white px-6 py-5 md:hidden shadow-lg animate-fadeIn">
+            <div className="flex flex-col gap-4">
               <button
-                type="button"
                 onClick={() => navigateTo('home')}
-                className={`text-left py-2 border-b border-surface-container ${
-                  currentPage === 'home' ? 'text-primary' : 'text-gray-600'
+                className={`text-left text-base font-semibold ${
+                  currentPage === 'home' ? 'text-primary' : 'text-on-surface-variant'
                 }`}
               >
                 Home
               </button>
               <button
-                type="button"
                 onClick={() => navigateTo('services')}
-                className={`text-left py-2 border-b border-surface-container ${
-                  currentPage === 'services' ? 'text-primary' : 'text-gray-600'
+                className={`text-left text-base font-semibold ${
+                  currentPage === 'services' ? 'text-primary font-bold' : 'text-on-surface-variant'
                 }`}
               >
-                Clinical Services
+                Services
               </button>
               <button
-                type="button"
-                onClick={() => navigateTo('about')}
-                className={`text-left py-2 border-b border-surface-container ${
-                  currentPage === 'about' ? 'text-primary' : 'text-gray-600'
-                }`}
+                onClick={() => navigateTo('home', 'about')}
+                className="text-left text-base font-semibold text-on-surface-variant"
               >
-                About Practice & Doctors
+                About Us
               </button>
               <button
-                type="button"
-                onClick={() => navigateTo('gallery')}
-                className={`text-left py-2 border-b border-surface-container ${
-                  currentPage === 'gallery' ? 'text-primary' : 'text-gray-600'
-                }`}
+                onClick={() => navigateTo('home', 'gallery')}
+                className="text-left text-base font-semibold text-on-surface-variant"
               >
-                Facility Gallery
+                Smile Gallery
               </button>
               <button
-                type="button"
-                onClick={() => navigateTo('articles')}
-                className={`text-left py-2 border-b border-surface-container ${
-                  currentPage === 'articles' ? 'text-primary' : 'text-gray-600'
-                }`}
+                onClick={() => navigateTo('home', 'blog')}
+                className="text-left text-base font-semibold text-on-surface-variant"
               >
-                Oral Health Articles
+                Blog & News
               </button>
               <button
-                type="button"
-                onClick={() => navigateTo('contact')}
-                className={`text-left py-2 border-b border-surface-container ${
-                  currentPage === 'contact' ? 'text-primary' : 'text-gray-600'
-                }`}
+                onClick={() => navigateTo('home', 'contact')}
+                className="text-left text-base font-semibold text-on-surface-variant"
               >
-                Contact & Hours
+                Contact & Support
               </button>
               <button
-                type="button"
-                onClick={() => navigateTo('consultation')}
-                className="mt-2 text-center rounded-lg bg-secondary py-2.5 text-xs font-bold uppercase text-white shadow-xs flex items-center justify-center gap-1.5"
+                onClick={() => navigateTo('services')}
+                className="mt-2 text-center rounded-lg bg-primary py-3 text-sm font-semibold text-white shadow-md flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
-                Doctor Chat & X-Ray Portal
+                <span className="material-symbols-outlined text-base">video_camera_front</span>
+                Book Online Consultation
               </button>
             </div>
           </div>
         )}
       </header>
 
-      {/* Main Multi-Page Switcher */}
-      <main>
-        {currentPage === 'services' && (
+      {/* Main Page Content */}
+      {currentPage === 'services' ? (
+        <main className="pt-16">
           <ServicesPage
-            onNavigate={navigateTo}
+            onNavigate={(page) => navigateTo(page)}
             onSelectServiceForBooking={handleSelectServiceForBooking}
           />
-        )}
-
-        {currentPage === 'about' && (
-          <AboutPage onNavigate={navigateTo} />
-        )}
-
-        {currentPage === 'gallery' && (
-          <GalleryPage onNavigate={navigateTo} />
-        )}
-
-        {currentPage === 'articles' && (
-          <ArticlesPage onNavigate={navigateTo} />
-        )}
-
-        {currentPage === 'contact' && (
-          <ContactPage onNavigate={navigateTo} />
-        )}
-
-        {currentPage === 'consultation' && (
-          <DoctorConsultationPage onNavigate={navigateTo} />
-        )}
-
-        {currentPage === 'privacy' && (
-          <PrivacyPolicyPage onNavigate={navigateTo} />
-        )}
-
-        {currentPage === 'terms' && (
-          <TermsConditionsPage onNavigate={navigateTo} />
-        )}
-
-        {currentPage === 'home' && (
-          <div>
-            {/* Hero Section */}
-            <section className="relative min-h-[75vh] overflow-hidden bg-primary text-white flex items-center">
-              <img
-                className="absolute inset-0 h-full w-full object-cover opacity-20"
-                src={heroImage}
-                alt="Modern dental operatory room"
-              />
-              <div className="relative mx-auto max-w-7xl px-5 py-16 md:px-10 md:py-24">
-                <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white border border-white/20 mb-4">
-                    <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">verified</span>
-                    Licensed Healthcare Facility
-                  </div>
-                  <h1 className="font-heading text-3xl font-bold leading-tight md:text-5xl">
-                    Comprehensive Dental Care & Diagnostic Precision
-                  </h1>
-                  <p className="mt-4 text-sm leading-relaxed text-white/80 md:text-base">
-                    Rumidental provides preventive dentistry, advanced restorative treatments, and digital radiograph second opinions delivered by certified dental practitioners.
-                  </p>
-                  
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => navigateTo('consultation')}
-                      className="rounded-lg bg-white px-5 py-3 text-xs font-bold uppercase tracking-wider text-primary shadow-sm transition hover:bg-surface-container-low cursor-pointer flex items-center gap-2"
-                    >
-                      <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
-                      Doctor Chat & X-Ray Transmission
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => navigateTo('services')}
-                      className="rounded-lg border border-white/30 bg-white/10 px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-white/20 cursor-pointer flex items-center gap-2"
-                    >
-                      <span>Explore All Services</span>
-                      <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-                    </button>
-                  </div>
+        </main>
+      ) : (
+        <main className="pt-16">
+          {/* Hero Section */}
+          <section className="hero-photo relative min-h-[86vh] overflow-hidden" id="home">
+            <img className="absolute inset-0 h-full w-full object-cover" src={heroImage} alt="Modern dental clinic treatment room" />
+            <div className="hero-overlay absolute inset-0" />
+            <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-5 py-20 md:px-10">
+              <div className="reveal max-w-2xl">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-secondary-container/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-secondary mb-4 border border-secondary/20">
+                  <span className="h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
+                  Online Dental Consultations & Telehealth
                 </div>
-              </div>
-            </section>
-
-            {/* 4 Clinical Pillars */}
-            <section className="bg-surface-container-low py-12 border-b border-surface-container">
-              <div className="mx-auto max-w-7xl px-5 md:px-10">
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {CLINICAL_PILLARS.map((pillar) => (
-                    <div key={pillar.title} className="rounded-xl border border-surface-container bg-white p-6 shadow-xs">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white mb-4">
-                        <span className="material-symbols-outlined text-xl" aria-hidden="true">{pillar.icon}</span>
-                      </div>
-                      <h2 className="font-heading text-sm font-bold text-primary mb-2">{pillar.title}</h2>
-                      <p className="text-xs leading-relaxed text-on-surface-variant">{pillar.text}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Featured Clinical Services */}
-            <section className="bg-white py-14 md:py-18">
-              <div className="mx-auto max-w-7xl px-5 md:px-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Procedures</span>
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">
-                      Featured Dental Treatments
-                    </h2>
-                    <p className="mt-2 text-xs text-on-surface-variant max-w-xl leading-relaxed">
-                      All procedures follow standardized clinical protocols and conservative tooth preservation guidelines.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
+                <h1 className="font-heading text-4xl font-bold leading-tight text-primary md:text-6xl">
+                  Expert Dental Care From Anywhere
+                </h1>
+                <p className="mt-6 text-lg leading-8 text-on-surface-variant">
+                  Speak directly with licensed dental specialists over secure video call. Get quick diagnoses, digital prescriptions, and expert second opinions from home.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <button 
                     onClick={() => navigateTo('services')}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-primary hover:bg-surface-container transition cursor-pointer self-start md:self-auto"
+                    className="rounded-lg bg-primary px-7 py-4 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-primary-container cursor-pointer flex items-center gap-2"
                   >
-                    <span>View All Services</span>
-                    <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+                    <span className="material-symbols-outlined text-xl">video_camera_front</span>
+                    Book Online Consultation
                   </button>
-                </div>
-
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {SERVICES_DATA.slice(0, 4).map((service) => (
-                    <article
-                      key={service.id}
-                      onClick={() => handleHomeServiceCardClick(service)}
-                      className="rounded-xl border border-surface-container bg-surface-container-low p-6 transition hover:border-primary/40 hover:bg-white shadow-xs cursor-pointer flex flex-col justify-between"
-                    >
-                      <div>
-                        <div className="flex items-center justify-between mb-4">
-                          <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">{service.icon}</span>
-                          <span className="rounded-md bg-surface-container px-2 py-0.5 text-[10px] font-bold text-slate-600">
-                            {service.category}
-                          </span>
-                        </div>
-                        <h3 className="font-heading text-sm font-bold text-primary mb-2">{service.title}</h3>
-                        <p className="text-xs leading-relaxed text-on-surface-variant">{service.shortDescription}</p>
-                      </div>
-                      <div className="mt-5 pt-3 border-t border-surface-container flex items-center justify-between text-xs font-semibold text-primary">
-                        <span>Clinical Details</span>
-                        <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Doctors & Clinical Directors Preview */}
-            <section className="bg-surface-container-low py-14 md:py-18 border-t border-surface-container">
-              <div className="mx-auto max-w-7xl px-5 md:px-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Staff</span>
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">
-                      Our Licensed Dental Surgeons
-                    </h2>
-                    <p className="mt-2 text-xs text-on-surface-variant max-w-xl leading-relaxed">
-                      Meet the certified practitioners responsible for diagnostics, operative care, and treatment planning.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => navigateTo('about')}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-surface-container bg-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-primary hover:bg-surface-container-low transition cursor-pointer self-start md:self-auto"
+                  <button 
+                    onClick={() => navigateTo('services')}
+                    className="rounded-lg border-2 border-secondary px-7 py-4 font-semibold text-secondary transition hover:bg-secondary hover:text-white cursor-pointer flex items-center gap-2"
                   >
-                    <span>Read Doctor Profiles</span>
-                    <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
-                  </button>
-                </div>
-
-                <div className="grid gap-6 md:grid-cols-3">
-                  {CLINICAL_DOCTORS_PREVIEW.map((doc) => (
-                    <div key={doc.name} className="rounded-xl border border-surface-container bg-white p-6 shadow-xs">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-white font-bold text-sm">
-                          {doc.name.split(' ')[1]?.[0] || 'D'}
-                        </div>
-                        <div>
-                          <h3 className="font-heading text-sm font-bold text-primary">{doc.name}</h3>
-                          <p className="text-[11px] text-secondary font-semibold">{doc.role}</p>
-                        </div>
-                      </div>
-                      <div className="space-y-1.5 text-xs text-on-surface-variant border-t border-surface-container pt-3">
-                        <p><strong className="text-gray-600">Specialty:</strong> {doc.specialty}</p>
-                        <p><strong className="text-gray-600">Credential:</strong> {doc.exp}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Diagnostic X-Ray & Doctor Chat Callout Banner */}
-            <section className="bg-primary py-12 text-white">
-              <div className="mx-auto max-w-7xl px-5 md:px-10">
-                <div className="rounded-xl border border-white/20 bg-white/5 p-8 md:p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                  <div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-secondary-container mb-2">
-                      <span className="material-symbols-outlined text-sm" aria-hidden="true">lock</span>
-                      Encrypted Patient Healthcare Portal
-                    </div>
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold">
-                      Need an X-Ray Review or Direct Specialist Consultation?
-                    </h2>
-                    <p className="mt-2 text-xs md:text-sm text-white/80 max-w-2xl leading-relaxed">
-                      Upload digital radiographs, panoramic scans, or clinical case records. Consult directly with our dental specialists in an encrypted 1-on-1 session.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => navigateTo('consultation')}
-                    className="rounded-lg bg-white px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm transition hover:bg-surface-container-low shrink-0 cursor-pointer flex items-center justify-center gap-2 self-start lg:self-auto"
-                  >
-                    <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
-                    Access Doctor Portal & Chat
+                    Explore Online Services
+                    <span className="material-symbols-outlined text-lg">arrow_forward</span>
                   </button>
                 </div>
               </div>
-            </section>
+            </div>
+          </section>
 
-            {/* Fast Appointment Request Form */}
-            <section className="bg-white py-14 md:py-18">
-              <div className="mx-auto max-w-7xl px-5 md:px-10">
-                <div className="grid gap-10 lg:grid-cols-12 items-start">
-                  <div className="lg:col-span-5 space-y-4">
-                    <span className="text-xs font-bold uppercase tracking-wider text-secondary">Appointments & Triage</span>
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary">
-                      Schedule a Clinical Consultation
-                    </h2>
-                    <p className="text-xs leading-relaxed text-on-surface-variant">
-                      Submit an appointment request for a comprehensive dental examination, routine cleaning, or specialist diagnostic evaluation.
-                    </p>
-
-                    <div className="rounded-xl border border-surface-container bg-surface-container-low p-5 space-y-3 text-xs text-on-surface-variant">
-                      <div className="flex items-center gap-2.5">
-                        <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">call</span>
-                        <span>Clinical Desk: +1 (555) 123-4567</span>
-                      </div>
-                      <div className="flex items-center gap-2.5">
-                        <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">mail</span>
-                        <span>reception@rumidentalcare.com</span>
-                      </div>
-                      <div className="flex items-center gap-2.5">
-                        <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">location_on</span>
-                        <span>1420 Medical Center Parkway, Suite 400</span>
-                      </div>
-                    </div>
+          {/* Home Services Preview Section */}
+          <section className="bg-white py-16" id="services">
+            <div className="mx-auto max-w-7xl px-5 md:px-10">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-secondary">
+                    <span className="material-symbols-outlined text-sm">wifi</span>
+                    100% Virtual Telehealth Services
                   </div>
+                  <h2 className="font-heading text-3xl md:text-4xl font-semibold text-primary mt-1">
+                    Online Dental Consultations
+                  </h2>
+                  <div className="mt-3 h-1 w-20 rounded-full bg-secondary" />
+                  <p className="mt-3 text-on-surface-variant">
+                    Convenient, confidential, and certified virtual consultations on Zoom, Google Meet, or WhatsApp.
+                  </p>
+                </div>
+                <button
+                  onClick={() => navigateTo('services')}
+                  className="inline-flex items-center gap-2 rounded-xl bg-surface-container-low px-5 py-3 text-sm font-bold text-primary hover:bg-primary hover:text-white transition shadow-sm cursor-pointer"
+                >
+                  View All Online Services
+                  <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                </button>
+              </div>
 
-                  <form onSubmit={handleSubmit} className="lg:col-span-7 rounded-xl border border-surface-container bg-surface-container-low p-6 md:p-8 space-y-4">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label htmlFor="home-name" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
-                          Full Name *
-                        </label>
-                        <input
-                          id="home-name"
-                          type="text"
-                          required
-                          placeholder="Your Name"
-                          value={form.name}
-                          onChange={(e) => setForm({ ...form, name: e.target.value })}
-                          className="w-full rounded-lg border border-surface-container bg-white px-3.5 py-2.5 text-xs outline-primary"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="home-phone" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
-                          Phone Number *
-                        </label>
-                        <input
-                          id="home-phone"
-                          type="tel"
-                          required
-                          placeholder="+1 (555) 000-0000"
-                          value={form.phone}
-                          onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full rounded-lg border border-surface-container bg-white px-3.5 py-2.5 text-xs outline-primary"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label htmlFor="home-email" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
-                          Email Address
-                        </label>
-                        <input
-                          id="home-email"
-                          type="email"
-                          placeholder="patient@example.com"
-                          value={form.email}
-                          onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full rounded-lg border border-surface-container bg-white px-3.5 py-2.5 text-xs outline-primary"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="home-service" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
-                          Procedure Interest *
-                        </label>
-                        <select
-                          id="home-service"
-                          value={form.service}
-                          onChange={(e) => setForm({ ...form, service: e.target.value })}
-                          className="w-full rounded-lg border border-surface-container bg-white px-3.5 py-2.5 text-xs outline-primary"
-                        >
-                          <option value="General Dental Examination">General Dental Examination</option>
-                          <option value="Teeth Cleaning & Scaling">Teeth Cleaning & Scaling</option>
-                          <option value="Root Canal Therapy">Root Canal Therapy</option>
-                          <option value="Dental Implants Consultation">Dental Implants Consultation</option>
-                          <option value="Orthodontics & Clear Aligners">Orthodontics & Clear Aligners</option>
-                          <option value="Emergency Toothache Care">Emergency Toothache Care</option>
-                        </select>
-                      </div>
-                    </div>
-
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {SERVICES_DATA.slice(0, 4).map((service) => (
+                  <article 
+                    onClick={() => handleHomeServiceCardClick(service)}
+                    className="reveal rounded-xl border border-surface-container bg-surface-container-low p-6 transition duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-xl cursor-pointer group flex flex-col justify-between" 
+                    key={service.title}
+                  >
                     <div>
-                      <label htmlFor="home-message" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
-                        Clinical Symptoms or Inquiry Notes *
-                      </label>
-                      <textarea
-                        id="home-message"
-                        required
-                        rows={3}
-                        placeholder="Please describe symptoms, affected tooth area, or preferred appointment dates..."
-                        value={form.message}
-                        onChange={(e) => setForm({ ...form, message: e.target.value })}
-                        className="w-full rounded-lg border border-surface-container bg-white px-3.5 py-2.5 text-xs outline-primary"
-                      />
+                      <div className="flex items-center justify-between mb-4">
+                        <Icon className="text-3xl text-primary group-hover:scale-110 transition duration-300">{service.icon}</Icon>
+                        <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+                          Online
+                        </span>
+                      </div>
+                      <h3 className="font-heading text-lg font-bold group-hover:text-primary transition">{service.title}</h3>
+                      <p className="mt-2.5 text-xs leading-5 text-on-surface-variant">{service.shortDescription}</p>
                     </div>
+                    <div className="mt-5 pt-3 border-t border-surface-container flex items-center justify-between text-xs font-bold text-primary group-hover:text-secondary">
+                      <span>Learn More</span>
+                      <span className="material-symbols-outlined text-base group-hover:translate-x-1 transition">arrow_forward</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
 
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full rounded-lg bg-primary py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-primary-container disabled:opacity-60 cursor-pointer"
-                    >
-                      {isSubmitting ? 'Transmitting Request...' : 'Submit Appointment Request'}
-                    </button>
+              {/* Bottom Telehealth Banner */}
+              <div className="mt-12 rounded-2xl bg-gradient-to-r from-primary to-primary-container p-8 md:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-secondary-container">
+                    <span className="material-symbols-outlined text-sm">schedule</span>
+                    Same-Day Appointments
+                  </div>
+                  <h3 className="font-heading text-2xl font-bold mt-1">Need urgent dental advice or a second opinion?</h3>
+                  <p className="mt-2 text-sm text-white/80 max-w-xl">
+                    Connect with a licensed dentist right now. Review X-rays, discuss cosmetic goals, or get emergency prescriptions from home.
+                  </p>
+                </div>
+                <button
+                  onClick={() => navigateTo('services')}
+                  className="rounded-xl bg-white px-7 py-3.5 font-bold text-primary shadow-lg transition hover:bg-secondary-container hover:text-secondary shrink-0 cursor-pointer flex items-center gap-2 text-sm"
+                >
+                  <span className="material-symbols-outlined text-lg">videocam</span>
+                  Start Online Consultation
+                </button>
+              </div>
+            </div>
+          </section>
 
-                    {status && (
-                      <p className="mt-2 text-center text-xs font-medium text-primary">
-                        {status}
-                      </p>
-                    )}
-                  </form>
+          {/* Why Choose Telehealth */}
+          <section className="bg-surface-container-low py-16" id="about">
+            <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-10 lg:grid-cols-2">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-secondary">Virtual Healthcare Advantages</span>
+                <h2 className="font-heading text-3xl font-semibold text-primary md:text-4xl mt-1">Why Consult Online With Rumidental</h2>
+                <div className="mt-8 space-y-6">
+                  {benefits.map(([icon, title, text]) => (
+                    <div className="flex gap-4" key={title}>
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-white">
+                        <Icon>{icon}</Icon>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold uppercase tracking-wide">{title}</h3>
+                        <p className="mt-1 text-sm leading-6 text-on-surface-variant">{text}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </section>
-          </div>
-        )}
-      </main>
+              <div className="relative">
+                <img className="aspect-square w-full rounded-xl object-cover shadow-2xl" src={dentistImage} alt="Smiling dentist in clinic" />
+                <div className="absolute -bottom-5 -right-5 -z-10 h-36 w-36 rounded-xl bg-secondary-container" />
+              </div>
+            </div>
+          </section>
 
-      {/* Modal for Service Information */}
+          {/* Clinical Excellence */}
+          <section className="bg-white py-16">
+            <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-10 lg:grid-cols-2">
+              <div className="grid grid-cols-2 gap-4">
+                <img className="h-72 w-full rounded-lg object-cover shadow-md" src={equipmentImage} alt="Dental equipment" />
+                <img className="mt-10 h-72 w-full rounded-lg object-cover shadow-md" src={receptionImage} alt="Dental clinic reception" />
+              </div>
+              <div>
+                <h2 className="font-heading text-3xl font-semibold text-primary md:text-4xl">Certified Doctors & Digital Diagnostics</h2>
+                <p className="mt-5 text-lg leading-8 text-on-surface-variant">
+                  Rumidental brings hospital-grade clinical expertise directly to your screen. Our licensed practitioners use secure high-definition telemedicine technology to provide compassionate, accurate dental advice.
+                </p>
+                <div className="mt-8 grid grid-cols-2 gap-8">
+                  <Stat value="15k+" label="Virtual Sessions" />
+                  <Stat value="99.2%" label="Patient Satisfaction" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Gallery */}
+          <section className="bg-surface-container-low py-16" id="gallery">
+            <div className="mx-auto max-w-7xl px-5 md:px-10">
+              <SectionTitle title="Smile Transformation Gallery" subtitle="Real results planned and guided by our virtual specialists." />
+              <div className="grid gap-6 md:grid-cols-3">
+                <GalleryCard className="md:col-span-2" image="/images/smile-gallery.jpg" title="Full Smile Rejuvenation" />
+                <div className="grid gap-6">
+                  <GalleryCard image="/images/whitening.jpg" title="Whitening Treatment" compact />
+                  <GalleryCard image="/images/equipment.jpg" title="Restorative Care" compact />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Testimonials */}
+          <section className="bg-white py-16">
+            <div className="mx-auto max-w-7xl px-5 md:px-10">
+              <SectionTitle title="Patient Experiences" subtitle="Trusted by thousands of online patients worldwide." />
+              <div className="grid gap-6 md:grid-cols-3">
+                {testimonials.map(([initials, name, treatment, quote]) => (
+                  <article className="rounded-lg border border-surface-container-highest bg-white p-7 shadow-sm" key={name}>
+                    <div className="mb-5 flex text-secondary">{Array.from({ length: 5 }).map((_, index) => <Icon key={index}>star</Icon>)}</div>
+                    <p className="leading-7 text-on-surface-variant">"{quote}"</p>
+                    <div className="mt-6 flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-container font-bold text-primary">{initials}</div>
+                      <div>
+                        <h3 className="font-bold">{name}</h3>
+                        <p className="text-sm text-on-surface-variant">{treatment}</p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Blog */}
+          <section className="bg-surface-container-low py-16" id="blog">
+            <div className="mx-auto max-w-7xl px-5 md:px-10">
+              <SectionTitle title="Telehealth Articles & Dental Tips" subtitle="Stay informed about oral health and virtual diagnostics." />
+              <div className="grid gap-7 md:grid-cols-3">
+                {posts.map(([category, title, text, image]) => (
+                  <article className="group bg-white p-4 rounded-xl border border-surface-container" key={title}>
+                    <img className="h-56 w-full rounded-lg object-cover transition group-hover:scale-[1.02]" src={image} alt="" />
+                    <p className="mt-5 text-xs font-bold uppercase tracking-widest text-secondary">{category}</p>
+                    <h3 className="mt-2 font-heading text-xl font-semibold text-primary">{title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-on-surface-variant">{text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Quick Contact Section */}
+          <section className="bg-white py-16" id="contact">
+            <div className="mx-auto grid max-w-7xl gap-10 px-5 md:px-10 lg:grid-cols-5">
+              <div className="lg:col-span-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-secondary">Get In Touch</span>
+                <h2 className="font-heading text-3xl font-semibold text-primary mt-1">Virtual Clinic Support</h2>
+                <div className="mt-7 space-y-4">
+                  <ContactLine icon="phone" text="+1 (555) 123-4567" />
+                  <ContactLine icon="mail" text="consult@rumidental.com" />
+                  <ContactLine icon="devices" text="Online Telehealth: Global Access" />
+                </div>
+                <div className="mt-8 border-t border-surface-container pt-5 text-sm">
+                  <p className="flex justify-between"><span>Online Hours (Mon - Fri)</span><strong>08:00 AM - 09:00 PM</strong></p>
+                  <p className="mt-3 flex justify-between"><span>Saturday & Sunday</span><strong>09:00 AM - 06:00 PM</strong></p>
+                  <p className="mt-3 flex justify-between"><span>Emergency Tele-triage</span><em>24/7 On-Call</em></p>
+                </div>
+              </div>
+              <form className="rounded-lg border border-surface-container bg-surface-container-low p-6 lg:col-span-3" onSubmit={handleSubmit}>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <input className="rounded-lg border border-surface-container bg-white px-4 py-3 outline-primary text-sm" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                  <input className="rounded-lg border border-surface-container bg-white px-4 py-3 outline-primary text-sm" placeholder="Phone or WhatsApp number" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
+                </div>
+                <textarea className="mt-4 min-h-32 w-full rounded-lg border border-surface-container bg-white px-4 py-3 outline-primary text-sm" placeholder="How can our online dental consultants assist you?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required />
+                <button className="mt-4 rounded-lg bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-container cursor-pointer text-sm" type="submit">Submit Inquiry</button>
+                {status && <p className="mt-3 text-sm text-on-surface-variant">{status}</p>}
+              </form>
+            </div>
+          </section>
+        </main>
+      )}
+
+      {/* Modal for Service from Home */}
       {selectedHomeModalService && (
         <ServiceModal
           service={selectedHomeModalService}
           onClose={() => setSelectedHomeModalService(null)}
           onBook={() => {
-            const title = selectedHomeModalService.title
             setSelectedHomeModalService(null)
-            handleSelectServiceForBooking(title)
+            navigateTo('services')
           }}
         />
       )}
 
-      {/* Global Clinical Footer */}
-      <footer className="bg-tertiary py-12 text-white border-t border-white/10">
+      {/* Global Footer */}
+      <footer className="bg-tertiary py-12 text-white">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 pb-8 border-b border-white/10 text-xs">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 font-heading text-lg font-bold">
-                <span className="material-symbols-outlined text-2xl text-secondary-container" aria-hidden="true">dentistry</span>
-                Rumidental Dental Practice
+          <div className="grid gap-8 md:grid-cols-4 pb-8 border-b border-white/10">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 font-heading text-2xl font-bold">
+                <span className="material-symbols-outlined text-3xl text-secondary-container">dentistry</span>
+                Rumidental
               </div>
-              <p className="text-white/70 leading-relaxed">
-                Licensed healthcare facility providing comprehensive preventive, restorative, and diagnostic dental services under statutory clinical standards.
+              <p className="mt-3 text-sm text-white/70 max-w-sm">
+                Certified virtual dental consultations, digital e-prescriptions, second opinions, and cosmetic smile designs.
               </p>
-              <div className="pt-2 text-white/50 text-[11px]">
-                Facility Registration No: MED-DEN-2026-9941
-              </div>
             </div>
 
             <div>
-              <h3 className="font-heading font-bold text-white mb-3 uppercase tracking-wider text-xs">Clinical Pages</h3>
-              <ul className="space-y-2 text-white/70">
+              <h4 className="font-heading font-semibold text-white mb-3 text-sm uppercase tracking-wider">Quick Navigation</h4>
+              <ul className="space-y-2 text-sm text-white/70">
                 <li>
-                  <button type="button" onClick={() => navigateTo('home')} className="hover:text-white transition cursor-pointer">Home</button>
+                  <button onClick={() => navigateTo('home')} className="hover:text-white transition cursor-pointer">Home</button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => navigateTo('services')} className="hover:text-white transition cursor-pointer">Clinical Services</button>
+                  <button onClick={() => navigateTo('services')} className="hover:text-white transition text-secondary-container font-semibold cursor-pointer">Services</button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => navigateTo('about')} className="hover:text-white transition cursor-pointer">About Practice & Doctors</button>
+                  <button onClick={() => navigateTo('home', 'about')} className="hover:text-white transition cursor-pointer">About</button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => navigateTo('gallery')} className="hover:text-white transition cursor-pointer">Facility & Clinic Gallery</button>
+                  <button onClick={() => navigateTo('home', 'gallery')} className="hover:text-white transition cursor-pointer">Gallery</button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => navigateTo('articles')} className="hover:text-white transition cursor-pointer">Oral Health Articles</button>
-                </li>
-                <li>
-                  <button type="button" onClick={() => navigateTo('contact')} className="hover:text-white transition cursor-pointer">Contact & Appointments</button>
+                  <button onClick={() => navigateTo('home', 'contact')} className="hover:text-white transition cursor-pointer">Contact</button>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-heading font-bold text-white mb-3 uppercase tracking-wider text-xs">Patient Resources</h3>
-              <ul className="space-y-2 text-white/70">
-                <li>
-                  <button type="button" onClick={() => navigateTo('consultation')} className="hover:text-white transition font-semibold text-secondary-container cursor-pointer">
-                    Doctor Chat & X-Ray Portal
-                  </button>
-                </li>
-                <li>
-                  <button type="button" onClick={() => navigateTo('privacy')} className="hover:text-white transition cursor-pointer">
-                    Privacy Policy & Medical Records
-                  </button>
-                </li>
-                <li>
-                  <button type="button" onClick={() => navigateTo('terms')} className="hover:text-white transition cursor-pointer">
-                    Terms & Conditions of Service
-                  </button>
-                </li>
-                <li className="pt-2 text-white/50 text-[11px]">
-                  Emergency Toothache Triage Available
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-heading font-bold text-white mb-3 uppercase tracking-wider text-xs">Clinic Contact</h3>
-              <p className="text-white/70 leading-relaxed">
-                1420 Medical Center Parkway, Suite 400
-              </p>
-              <a href="tel:+15551234567" className="mt-2 inline-block font-bold text-secondary-container text-sm hover:underline">
+              <h4 className="font-heading font-semibold text-white mb-3 text-sm uppercase tracking-wider">Virtual Helpline</h4>
+              <p className="text-sm text-white/70">Urgent dental assistance & video triage:</p>
+              <a href="tel:+15551234567" className="mt-2 inline-block font-bold text-secondary-container text-base hover:underline">
                 +1 (555) 123-4567
               </a>
-              <p className="mt-1 text-white/50 text-[11px]">Direct reception line during clinical hours.</p>
+              <p className="mt-2 text-xs text-white/50">Online consultations available daily.</p>
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-white/60 gap-3">
-            <p>(c) 2026 Rumidental Dental Practice. All rights reserved.</p>
-            <p>Certified Healthcare Facility. Strict Patient Confidentiality.</p>
+          <div className="mt-8 flex flex-col md:flex-row items-center justify-between text-xs text-white/60 gap-4">
+            <p>(c) 2026 Rumidental Virtual Clinic. Certified Telehealth Practice.</p>
+            <p>Private, HIPAA-compliant online consultations.</p>
           </div>
         </div>
       </footer>
     </div>
+  )
+}
+
+function SectionTitle({ title, subtitle }) {
+  return (
+    <div className="mb-12 text-center">
+      <h2 className="font-heading text-3xl font-semibold text-primary md:text-4xl">{title}</h2>
+      <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-secondary" />
+      {subtitle && <p className="mt-4 text-on-surface-variant">{subtitle}</p>}
+    </div>
+  )
+}
+
+function Stat({ value, label }) {
+  return (
+    <div>
+      <div className="font-heading text-4xl font-bold text-secondary">{value}</div>
+      <div className="mt-1 text-sm font-bold uppercase tracking-wide">{label}</div>
+    </div>
+  )
+}
+
+function GalleryCard({ image, title, compact = false, className = '' }) {
+  return (
+    <article className={`group relative overflow-hidden rounded-lg shadow-lg ${className}`}>
+      <img className={`${compact ? 'h-52' : 'h-[28rem]'} w-full object-cover transition duration-500 group-hover:scale-105`} src={image} alt={title} />
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+        <h3 className="font-heading text-xl font-semibold">{title}</h3>
+      </div>
+    </article>
+  )
+}
+
+function ContactLine({ icon, text }) {
+  return (
+    <p className="flex items-center gap-4">
+      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container text-primary"><Icon>{icon}</Icon></span>
+      <span>{text}</span>
+    </p>
   )
 }
 
