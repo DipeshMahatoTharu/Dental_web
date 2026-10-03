@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 import { ServicesPage } from './pages/ServicesPage'
+import { AboutPage } from './pages/AboutPage'
+import { GalleryPage } from './pages/GalleryPage'
+import { ArticlesPage } from './pages/ArticlesPage'
+import { ContactPage } from './pages/ContactPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { TermsConditionsPage } from './pages/TermsConditionsPage'
 import { ServiceModal } from './components/ServiceModal'
@@ -63,14 +67,14 @@ function Icon({ children, className = '' }) {
 }
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'services' | 'privacy' | 'terms'
+  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'services' | 'about' | 'gallery' | 'articles' | 'contact' | 'privacy' | 'terms'
   const [form, setForm] = useState({ name: '', phone: '', message: '' })
   const [status, setStatus] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [selectedHomeModalService, setSelectedHomeModalService] = useState(null)
 
-  // URL hash navigation listener for bookmarking, back/forward buttons, and deep links
+  // URL hash navigation listener for direct links, bookmarks, and back/forward browser buttons
   useEffect(() => {
     function handleHashChange() {
       const hash = window.location.hash.toLowerCase()
@@ -82,6 +86,18 @@ function App() {
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } else if (hash.includes('services')) {
         setCurrentPage('services')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else if (hash.includes('about')) {
+        setCurrentPage('about')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else if (hash.includes('gallery')) {
+        setCurrentPage('gallery')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else if (hash.includes('articles') || hash.includes('blog')) {
+        setCurrentPage('articles')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else if (hash.includes('contact')) {
+        setCurrentPage('contact')
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
         setCurrentPage('home')
@@ -102,17 +118,10 @@ function App() {
 
   function navigateTo(target, sectionId = null) {
     setMobileMenuOpen(false)
-    if (target === 'services') {
-      window.location.hash = '#/services'
-      setCurrentPage('services')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (target === 'privacy') {
-      window.location.hash = '#/privacy'
-      setCurrentPage('privacy')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else if (target === 'terms') {
-      window.location.hash = '#/terms'
-      setCurrentPage('terms')
+    const validPages = ['services', 'about', 'gallery', 'articles', 'contact', 'privacy', 'terms']
+    if (validPages.includes(target)) {
+      window.location.hash = `#/${target}`
+      setCurrentPage(target)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       if (sectionId && sectionId !== 'home') {
@@ -131,7 +140,7 @@ function App() {
   }
 
   function handleSelectServiceForBooking(serviceTitle) {
-    navigateTo('home', 'contact')
+    navigateTo('contact')
     setForm((prev) => ({
       ...prev,
       message: `I would like to request an appointment for: ${serviceTitle}.`
@@ -181,13 +190,13 @@ function App() {
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-7 md:flex">
+          <div className="hidden items-center gap-6 lg:gap-7 md:flex">
             <button
               type="button"
               onClick={() => navigateTo('home')}
               className={`text-sm font-semibold transition cursor-pointer ${
                 currentPage === 'home'
-                  ? 'text-primary border-b-2 border-primary pb-0.5'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
                   : 'text-on-surface-variant hover:text-primary'
               }`}
             >
@@ -198,7 +207,7 @@ function App() {
               onClick={() => navigateTo('services')}
               className={`text-sm font-semibold transition cursor-pointer ${
                 currentPage === 'services'
-                  ? 'text-primary border-b-2 border-primary pb-0.5'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
                   : 'text-on-surface-variant hover:text-primary'
               }`}
             >
@@ -206,29 +215,45 @@ function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateTo('home', 'about')}
-              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
+              onClick={() => navigateTo('about')}
+              className={`text-sm font-semibold transition cursor-pointer ${
+                currentPage === 'about'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
+                  : 'text-on-surface-variant hover:text-primary'
+              }`}
             >
-              About Practice
+              About
             </button>
             <button
               type="button"
-              onClick={() => navigateTo('home', 'standards')}
-              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
+              onClick={() => navigateTo('gallery')}
+              className={`text-sm font-semibold transition cursor-pointer ${
+                currentPage === 'gallery'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
+                  : 'text-on-surface-variant hover:text-primary'
+              }`}
             >
-              Clinical Standards
+              Gallery
             </button>
             <button
               type="button"
-              onClick={() => navigateTo('home', 'gallery')}
-              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
+              onClick={() => navigateTo('articles')}
+              className={`text-sm font-semibold transition cursor-pointer ${
+                currentPage === 'articles'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
+                  : 'text-on-surface-variant hover:text-primary'
+              }`}
             >
-              Facility Gallery
+              Articles
             </button>
             <button
               type="button"
-              onClick={() => navigateTo('home', 'contact')}
-              className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
+              onClick={() => navigateTo('contact')}
+              className={`text-sm font-semibold transition cursor-pointer ${
+                currentPage === 'contact'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
+                  : 'text-on-surface-variant hover:text-primary'
+              }`}
             >
               Contact
             </button>
@@ -241,7 +266,7 @@ function App() {
               className="rounded-lg bg-primary px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer flex items-center gap-1.5"
             >
               <span className="material-symbols-outlined text-base" aria-hidden="true">calendar_month</span>
-              Book Consultation
+              Book Appointment
             </button>
           </div>
 
@@ -284,29 +309,37 @@ function App() {
               </button>
               <button
                 type="button"
-                onClick={() => navigateTo('home', 'about')}
-                className="text-left text-sm font-semibold text-on-surface-variant"
+                onClick={() => navigateTo('about')}
+                className={`text-left text-sm font-semibold ${
+                  currentPage === 'about' ? 'text-primary font-bold' : 'text-on-surface-variant'
+                }`}
               >
                 About Practice
               </button>
               <button
                 type="button"
-                onClick={() => navigateTo('home', 'standards')}
-                className="text-left text-sm font-semibold text-on-surface-variant"
-              >
-                Clinical Standards
-              </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('home', 'gallery')}
-                className="text-left text-sm font-semibold text-on-surface-variant"
+                onClick={() => navigateTo('gallery')}
+                className={`text-left text-sm font-semibold ${
+                  currentPage === 'gallery' ? 'text-primary font-bold' : 'text-on-surface-variant'
+                }`}
               >
                 Facility Gallery
               </button>
               <button
                 type="button"
-                onClick={() => navigateTo('home', 'contact')}
-                className="text-left text-sm font-semibold text-on-surface-variant"
+                onClick={() => navigateTo('articles')}
+                className={`text-left text-sm font-semibold ${
+                  currentPage === 'articles' ? 'text-primary font-bold' : 'text-on-surface-variant'
+                }`}
+              >
+                Patient Articles
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('contact')}
+                className={`text-left text-sm font-semibold ${
+                  currentPage === 'contact' ? 'text-primary font-bold' : 'text-on-surface-variant'
+                }`}
               >
                 Contact & Hours
               </button>
@@ -345,6 +378,22 @@ function App() {
             onSelectServiceForBooking={handleSelectServiceForBooking}
           />
         </main>
+      ) : currentPage === 'about' ? (
+        <main className="pt-14">
+          <AboutPage onNavigate={(page) => navigateTo(page)} />
+        </main>
+      ) : currentPage === 'gallery' ? (
+        <main className="pt-14">
+          <GalleryPage onNavigate={(page) => navigateTo(page)} />
+        </main>
+      ) : currentPage === 'articles' ? (
+        <main className="pt-14">
+          <ArticlesPage onNavigate={(page) => navigateTo(page)} />
+        </main>
+      ) : currentPage === 'contact' ? (
+        <main className="pt-14">
+          <ContactPage onNavigate={(page) => navigateTo(page)} />
+        </main>
       ) : currentPage === 'privacy' ? (
         <main className="pt-14">
           <PrivacyPolicyPage onNavigate={(page) => navigateTo(page)} />
@@ -374,7 +423,7 @@ function App() {
                 <div className="mt-7 flex flex-wrap gap-3">
                   <button 
                     type="button"
-                    onClick={() => navigateTo('services')}
+                    onClick={() => navigateTo('contact')}
                     className="rounded-lg bg-primary px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">calendar_month</span>
@@ -470,7 +519,7 @@ function App() {
             </div>
           </section>
 
-          {/* About Practice & Facility */}
+          {/* About Practice Teaser Section */}
           <section className="bg-white py-14" id="about">
             <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 md:px-10 lg:grid-cols-2">
               <div>
@@ -495,6 +544,15 @@ function App() {
                     <span>Dedicated consultation suites for private treatment planning.</span>
                   </div>
                 </div>
+                <div className="mt-7">
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('about')}
+                    className="rounded-lg bg-primary px-5 py-2.5 text-xs font-bold uppercase text-white hover:bg-primary-container transition cursor-pointer"
+                  >
+                    Learn More About Our Team
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <img className="h-64 w-full rounded-lg object-cover border border-surface-container" src={equipmentImage} alt="State-of-the-art dental clinical equipment" />
@@ -503,13 +561,22 @@ function App() {
             </div>
           </section>
 
-          {/* Facility Gallery */}
+          {/* Facility Gallery Teaser */}
           <section className="bg-surface-container-low py-14" id="gallery">
             <div className="mx-auto max-w-7xl px-5 md:px-10">
-              <div className="text-center max-w-2xl mx-auto mb-10">
-                <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Environment</span>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Practice Gallery</h2>
-                <div className="mx-auto mt-2 h-0.5 w-16 bg-secondary" />
+              <div className="flex justify-between items-end mb-8">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Environment</span>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Practice Gallery</h2>
+                  <div className="mt-2 h-0.5 w-16 bg-secondary" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigateTo('gallery')}
+                  className="rounded-lg bg-white px-4 py-2 text-xs font-bold uppercase text-primary border border-surface-container hover:bg-surface-container-low transition cursor-pointer"
+                >
+                  View Full Gallery
+                </button>
               </div>
 
               <div className="grid gap-4 md:grid-cols-3">
@@ -531,13 +598,22 @@ function App() {
             </div>
           </section>
 
-          {/* Educational Articles */}
+          {/* Educational Articles Teaser */}
           <section className="bg-white py-14" id="articles">
             <div className="mx-auto max-w-7xl px-5 md:px-10">
-              <div className="text-center max-w-2xl mx-auto mb-10">
-                <span className="text-xs font-bold uppercase tracking-wider text-secondary">Patient Education</span>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Oral Health Articles</h2>
-                <div className="mx-auto mt-2 h-0.5 w-16 bg-secondary" />
+              <div className="flex justify-between items-end mb-8">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-secondary">Patient Education</span>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Oral Health Articles</h2>
+                  <div className="mt-2 h-0.5 w-16 bg-secondary" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigateTo('articles')}
+                  className="rounded-lg bg-surface-container-low px-4 py-2 text-xs font-bold uppercase text-primary border border-surface-container hover:bg-primary hover:text-white transition cursor-pointer"
+                >
+                  View All Articles
+                </button>
               </div>
 
               <div className="grid gap-6 md:grid-cols-3">
@@ -555,7 +631,7 @@ function App() {
             </div>
           </section>
 
-          {/* Contact & Clinic Hours Section */}
+          {/* Quick Contact Desk */}
           <section className="bg-surface-container-low py-14" id="contact">
             <div className="mx-auto grid max-w-7xl gap-8 px-5 md:px-10 lg:grid-cols-5">
               <div className="lg:col-span-2">
@@ -590,7 +666,7 @@ function App() {
               </div>
 
               <form className="rounded-xl border border-surface-container bg-white p-6 lg:col-span-3 space-y-3" onSubmit={handleSubmit}>
-                <h3 className="font-heading text-base font-bold text-primary">Request an Appointment or Information</h3>
+                <h3 className="font-heading text-base font-bold text-primary">Quick Appointment Inquiry</h3>
                 <div className="grid gap-3 md:grid-cols-2">
                   <div>
                     <label htmlFor="home-contact-name" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
@@ -674,7 +750,7 @@ function App() {
             </div>
 
             <div>
-              <h4 className="font-heading font-semibold text-white mb-3 uppercase tracking-wider">Quick Links</h4>
+              <h4 className="font-heading font-semibold text-white mb-3 uppercase tracking-wider">Practice Navigation</h4>
               <ul className="space-y-2 text-white/70">
                 <li>
                   <button type="button" onClick={() => navigateTo('home')} className="hover:text-white transition cursor-pointer">Home</button>
@@ -683,10 +759,16 @@ function App() {
                   <button type="button" onClick={() => navigateTo('services')} className="hover:text-white transition cursor-pointer">Clinical Services</button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => navigateTo('home', 'standards')} className="hover:text-white transition cursor-pointer">Practice Standards</button>
+                  <button type="button" onClick={() => navigateTo('about')} className="hover:text-white transition cursor-pointer">About Practice & Doctors</button>
                 </li>
                 <li>
-                  <button type="button" onClick={() => navigateTo('home', 'contact')} className="hover:text-white transition cursor-pointer">Contact & Hours</button>
+                  <button type="button" onClick={() => navigateTo('gallery')} className="hover:text-white transition cursor-pointer">Facility Gallery</button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => navigateTo('articles')} className="hover:text-white transition cursor-pointer">Oral Health Articles</button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => navigateTo('contact')} className="hover:text-white transition cursor-pointer">Contact & Hours</button>
                 </li>
               </ul>
             </div>
