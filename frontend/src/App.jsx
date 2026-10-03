@@ -10,7 +10,7 @@ const dentistImage = '/images/dentist.jpg'
 const equipmentImage = '/images/equipment.jpg'
 const receptionImage = '/images/reception.jpg'
 
-const clinicalStandards = [
+const CLINICAL_STANDARDS = [
   {
     icon: 'verified',
     title: 'Certified Dental Specialists',
@@ -33,7 +33,7 @@ const clinicalStandards = [
   }
 ]
 
-const clinicalArticles = [
+const CLINICAL_ARTICLES = [
   {
     category: 'Preventive Dentistry',
     title: 'Early Caries Detection & Enamel Remineralization',
@@ -55,13 +55,18 @@ const clinicalArticles = [
 ]
 
 function Icon({ children, className = '' }) {
-  return <span className={`material-symbols-outlined ${className}`}>{children}</span>
+  return (
+    <span className={`material-symbols-outlined ${className}`} aria-hidden="true">
+      {children}
+    </span>
+  )
 }
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home') // 'home' | 'services' | 'privacy' | 'terms'
   const [form, setForm] = useState({ name: '', phone: '', message: '' })
   const [status, setStatus] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [selectedHomeModalService, setSelectedHomeModalService] = useState(null)
 
@@ -139,18 +144,25 @@ function App() {
 
   async function handleSubmit(event) {
     event.preventDefault()
+    setIsSubmitting(true)
     setStatus('Submitting your request...')
     try {
       const response = await fetch('/api/contact/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name.trim(),
+          phone: form.phone.trim(),
+          message: form.message.trim()
+        }),
       })
       if (!response.ok) throw new Error('Request failed')
       setForm({ name: '', phone: '', message: '' })
       setStatus('Thank you. Our clinic team will contact you shortly to confirm your appointment.')
     } catch {
       setStatus('Please call our clinic directly at +1 (555) 123-4567.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -158,18 +170,20 @@ function App() {
     <div className="min-h-screen bg-background text-on-background">
       {/* Header Navigation */}
       <header className="fixed top-0 z-50 w-full border-b border-surface-container bg-white">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10">
+        <nav aria-label="Main Navigation" className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10">
           <button 
+            type="button"
             onClick={() => navigateTo('home')} 
             className="font-heading text-xl font-bold text-primary flex items-center gap-2 cursor-pointer"
           >
-            <span className="material-symbols-outlined text-2xl text-secondary">dentistry</span>
+            <span className="material-symbols-outlined text-2xl text-secondary" aria-hidden="true">dentistry</span>
             Rumidental
           </button>
 
           {/* Desktop Navigation */}
           <div className="hidden items-center gap-7 md:flex">
             <button
+              type="button"
               onClick={() => navigateTo('home')}
               className={`text-sm font-semibold transition cursor-pointer ${
                 currentPage === 'home'
@@ -180,6 +194,7 @@ function App() {
               Home
             </button>
             <button
+              type="button"
               onClick={() => navigateTo('services')}
               className={`text-sm font-semibold transition cursor-pointer ${
                 currentPage === 'services'
@@ -190,24 +205,28 @@ function App() {
               Services
             </button>
             <button
+              type="button"
               onClick={() => navigateTo('home', 'about')}
               className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
               About Practice
             </button>
             <button
+              type="button"
               onClick={() => navigateTo('home', 'standards')}
               className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
               Clinical Standards
             </button>
             <button
+              type="button"
               onClick={() => navigateTo('home', 'gallery')}
               className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
               Facility Gallery
             </button>
             <button
+              type="button"
               onClick={() => navigateTo('home', 'contact')}
               className="text-sm font-semibold text-on-surface-variant transition hover:text-primary cursor-pointer"
             >
@@ -217,21 +236,25 @@ function App() {
 
           <div className="hidden md:flex items-center gap-3">
             <button
+              type="button"
               onClick={() => navigateTo('services')}
               className="rounded-lg bg-primary px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer flex items-center gap-1.5"
             >
-              <span className="material-symbols-outlined text-base">calendar_month</span>
+              <span className="material-symbols-outlined text-base" aria-hidden="true">calendar_month</span>
               Book Consultation
             </button>
           </div>
 
           {/* Mobile Hamburger Button */}
           <button
+            type="button"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-menu"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="flex items-center justify-center p-2 text-primary md:hidden rounded-md hover:bg-surface-container transition cursor-pointer"
             aria-label="Toggle navigation menu"
           >
-            <span className="material-symbols-outlined text-2xl">
+            <span className="material-symbols-outlined text-2xl" aria-hidden="true">
               {mobileMenuOpen ? 'close' : 'menu'}
             </span>
           </button>
@@ -239,9 +262,10 @@ function App() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="border-b border-surface-container bg-white px-6 py-4 md:hidden shadow-md">
+          <div id="mobile-navigation-menu" className="border-b border-surface-container bg-white px-6 py-4 md:hidden shadow-md">
             <div className="flex flex-col gap-3">
               <button
+                type="button"
                 onClick={() => navigateTo('home')}
                 className={`text-left text-sm font-semibold ${
                   currentPage === 'home' ? 'text-primary font-bold' : 'text-on-surface-variant'
@@ -250,6 +274,7 @@ function App() {
                 Home
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('services')}
                 className={`text-left text-sm font-semibold ${
                   currentPage === 'services' ? 'text-primary font-bold' : 'text-on-surface-variant'
@@ -258,46 +283,53 @@ function App() {
                 Services
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('home', 'about')}
                 className="text-left text-sm font-semibold text-on-surface-variant"
               >
                 About Practice
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('home', 'standards')}
                 className="text-left text-sm font-semibold text-on-surface-variant"
               >
                 Clinical Standards
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('home', 'gallery')}
                 className="text-left text-sm font-semibold text-on-surface-variant"
               >
                 Facility Gallery
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('home', 'contact')}
                 className="text-left text-sm font-semibold text-on-surface-variant"
               >
                 Contact & Hours
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('privacy')}
                 className="text-left text-sm font-semibold text-on-surface-variant"
               >
                 Privacy Policy
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('terms')}
                 className="text-left text-sm font-semibold text-on-surface-variant"
               >
                 Terms & Conditions
               </button>
               <button
+                type="button"
                 onClick={() => navigateTo('services')}
                 className="mt-2 text-center rounded-lg bg-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white flex items-center justify-center gap-1.5"
               >
-                <span className="material-symbols-outlined text-base">calendar_month</span>
+                <span className="material-symbols-outlined text-base" aria-hidden="true">calendar_month</span>
                 Book Appointment
               </button>
             </div>
@@ -325,12 +357,12 @@ function App() {
         <main className="pt-14">
           {/* Grounded Clinical Hero Section */}
           <section className="hero-photo relative min-h-[75vh] overflow-hidden" id="home">
-            <img className="absolute inset-0 h-full w-full object-cover" src={heroImage} alt="Modern clinical dental examination room" />
+            <img className="absolute inset-0 h-full w-full object-cover" src={heroImage} alt="Modern clinical dental examination room with sterile instruments and dental chair" />
             <div className="hero-overlay absolute inset-0" />
             <div className="relative mx-auto flex min-h-[75vh] max-w-7xl items-center px-5 py-16 md:px-10">
               <div className="max-w-2xl">
                 <div className="inline-flex items-center gap-1.5 rounded-md bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary mb-4 border border-surface-container">
-                  <span className="material-symbols-outlined text-sm text-secondary">verified</span>
+                  <span className="material-symbols-outlined text-sm text-secondary" aria-hidden="true">verified</span>
                   Licensed Dental Practice & Specialist Consultations
                 </div>
                 <h1 className="font-heading text-3xl font-bold leading-tight text-primary md:text-5xl">
@@ -341,18 +373,20 @@ function App() {
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <button 
+                    type="button"
                     onClick={() => navigateTo('services')}
                     className="rounded-lg bg-primary px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-lg">calendar_month</span>
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">calendar_month</span>
                     Schedule Appointment
                   </button>
                   <button 
+                    type="button"
                     onClick={() => navigateTo('services')}
                     className="rounded-lg border border-primary/30 bg-white px-6 py-3 text-xs font-bold uppercase tracking-wider text-primary transition hover:bg-surface-container-low cursor-pointer flex items-center gap-2"
                   >
                     View All Services
-                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                    <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
                   </button>
                 </div>
               </div>
@@ -368,17 +402,18 @@ function App() {
                   <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">
                     Dental Care & Treatment Programs
                   </h2>
-                  <div className="mt-2 h-1 w-16 rounded-sm bg-secondary" />
+                  <div className="mt-2 h-0.5 w-16 bg-secondary" />
                   <p className="mt-2 text-xs text-on-surface-variant">
                     From routine preventive cleanings to specialized endodontic and restorative procedures.
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => navigateTo('services')}
                   className="inline-flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-2.5 text-xs font-bold uppercase text-primary hover:bg-primary hover:text-white transition border border-surface-container cursor-pointer"
                 >
                   View Full Services Catalog
-                  <span className="material-symbols-outlined text-base">arrow_forward</span>
+                  <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
                 </button>
               </div>
 
@@ -387,7 +422,7 @@ function App() {
                   <article 
                     onClick={() => handleHomeServiceCardClick(service)}
                     className="flex flex-col justify-between rounded-xl border border-surface-container bg-surface-container-low p-6 transition duration-150 hover:border-primary/40 cursor-pointer group" 
-                    key={service.title}
+                    key={service.id}
                   >
                     <div>
                       <div className="flex items-center justify-between mb-4">
@@ -401,7 +436,7 @@ function App() {
                     </div>
                     <div className="mt-5 pt-3 border-t border-surface-container flex items-center justify-between text-xs font-bold text-primary">
                       <span>Clinical Details</span>
-                      <span className="material-symbols-outlined text-base">arrow_forward</span>
+                      <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
                     </div>
                   </article>
                 ))}
@@ -409,20 +444,20 @@ function App() {
             </div>
           </section>
 
-          {/* Clinical Quality Standards Section (replaces fake reviews) */}
+          {/* Clinical Quality Standards Section */}
           <section className="bg-surface-container-low py-14" id="standards">
             <div className="mx-auto max-w-7xl px-5 md:px-10">
               <div className="text-center max-w-2xl mx-auto mb-10">
                 <span className="text-xs font-bold uppercase tracking-wider text-secondary">Quality & Compliance</span>
                 <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Our Practice Standards</h2>
-                <div className="mx-auto mt-2 h-1 w-16 rounded-sm bg-secondary" />
+                <div className="mx-auto mt-2 h-0.5 w-16 bg-secondary" />
                 <p className="mt-2 text-xs text-on-surface-variant">
                   We maintain strict clinical governance and transparent patient protocols.
                 </p>
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {clinicalStandards.map((item) => (
+                {CLINICAL_STANDARDS.map((item) => (
                   <div className="rounded-xl border border-surface-container bg-white p-6" key={item.title}>
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white mb-4">
                       <Icon>{item.icon}</Icon>
@@ -448,22 +483,22 @@ function App() {
                 </p>
                 <div className="mt-6 space-y-3 text-xs text-on-surface-variant">
                   <div className="flex items-start gap-2.5">
-                    <span className="material-symbols-outlined text-secondary text-base shrink-0">check_circle</span>
+                    <span className="material-symbols-outlined text-secondary text-base shrink-0" aria-hidden="true">check_circle</span>
                     <span>Digital low-radiation radiography and high-resolution intraoral imaging.</span>
                   </div>
                   <div className="flex items-start gap-2.5">
-                    <span className="material-symbols-outlined text-secondary text-base shrink-0">check_circle</span>
+                    <span className="material-symbols-outlined text-secondary text-base shrink-0" aria-hidden="true">check_circle</span>
                     <span>Class-B autoclave sterilization cycles meeting international standards.</span>
                   </div>
                   <div className="flex items-start gap-2.5">
-                    <span className="material-symbols-outlined text-secondary text-base shrink-0">check_circle</span>
+                    <span className="material-symbols-outlined text-secondary text-base shrink-0" aria-hidden="true">check_circle</span>
                     <span>Dedicated consultation suites for private treatment planning.</span>
                   </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <img className="h-64 w-full rounded-lg object-cover border border-surface-container" src={equipmentImage} alt="Dental equipment" />
-                <img className="h-64 w-full rounded-lg object-cover border border-surface-container" src={dentistImage} alt="Doctor in consultation" />
+                <img className="h-64 w-full rounded-lg object-cover border border-surface-container" src={equipmentImage} alt="State-of-the-art dental clinical equipment" />
+                <img className="h-64 w-full rounded-lg object-cover border border-surface-container" src={dentistImage} alt="Licensed dentist consulting with a patient in clinical office" />
               </div>
             </div>
           </section>
@@ -474,21 +509,21 @@ function App() {
               <div className="text-center max-w-2xl mx-auto mb-10">
                 <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Environment</span>
                 <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Practice Gallery</h2>
-                <div className="mx-auto mt-2 h-1 w-16 rounded-sm bg-secondary" />
+                <div className="mx-auto mt-2 h-0.5 w-16 bg-secondary" />
               </div>
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="overflow-hidden rounded-lg border border-surface-container bg-white md:col-span-2">
-                  <img className="h-72 w-full object-cover" src="/images/smile-gallery.jpg" alt="Clinical treatment planning room" />
+                  <img className="h-72 w-full object-cover" src="/images/smile-gallery.jpg" alt="Clinical examination suite and treatment planning station" />
                   <div className="p-3 text-xs font-medium text-on-surface-variant">Examination & Consultation Suite</div>
                 </div>
                 <div className="space-y-4">
                   <div className="overflow-hidden rounded-lg border border-surface-container bg-white">
-                    <img className="h-32 w-full object-cover" src={receptionImage} alt="Patient reception area" />
+                    <img className="h-32 w-full object-cover" src={receptionImage} alt="Rumidental clinic patient reception and welcoming lounge" />
                     <div className="p-2 text-xs font-medium text-on-surface-variant">Reception & Check-in Area</div>
                   </div>
                   <div className="overflow-hidden rounded-lg border border-surface-container bg-white">
-                    <img className="h-32 w-full object-cover" src="/images/whitening.jpg" alt="Restorative care equipment" />
+                    <img className="h-32 w-full object-cover" src="/images/whitening.jpg" alt="Sterilization room and restorative dental tools" />
                     <div className="p-2 text-xs font-medium text-on-surface-variant">Sterilization & Treatment Area</div>
                   </div>
                 </div>
@@ -502,14 +537,14 @@ function App() {
               <div className="text-center max-w-2xl mx-auto mb-10">
                 <span className="text-xs font-bold uppercase tracking-wider text-secondary">Patient Education</span>
                 <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Oral Health Articles</h2>
-                <div className="mx-auto mt-2 h-1 w-16 rounded-sm bg-secondary" />
+                <div className="mx-auto mt-2 h-0.5 w-16 bg-secondary" />
               </div>
 
               <div className="grid gap-6 md:grid-cols-3">
-                {clinicalArticles.map((article) => (
+                {CLINICAL_ARTICLES.map((article) => (
                   <article className="bg-white p-4 rounded-xl border border-surface-container flex flex-col justify-between" key={article.title}>
                     <div>
-                      <img className="h-48 w-full rounded-lg object-cover" src={article.image} alt={article.title} />
+                      <img className="h-48 w-full rounded-lg object-cover" src={article.image} alt={`Illustrative clinical image for article on ${article.title}`} />
                       <p className="mt-4 text-xs font-bold uppercase tracking-wider text-secondary">{article.category}</p>
                       <h3 className="mt-1 font-heading text-base font-bold text-primary">{article.title}</h3>
                       <p className="mt-2 text-xs leading-5 text-on-surface-variant">{article.description}</p>
@@ -557,33 +592,53 @@ function App() {
               <form className="rounded-xl border border-surface-container bg-white p-6 lg:col-span-3 space-y-3" onSubmit={handleSubmit}>
                 <h3 className="font-heading text-base font-bold text-primary">Request an Appointment or Information</h3>
                 <div className="grid gap-3 md:grid-cols-2">
-                  <input 
-                    className="rounded-lg border border-surface-container bg-surface-container-low px-3.5 py-2.5 outline-primary text-xs" 
-                    placeholder="Full Name *" 
-                    value={form.name} 
-                    onChange={(e) => setForm({ ...form, name: e.target.value })} 
-                    required 
-                  />
-                  <input 
-                    className="rounded-lg border border-surface-container bg-surface-container-low px-3.5 py-2.5 outline-primary text-xs" 
-                    placeholder="Phone Number *" 
-                    value={form.phone} 
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })} 
+                  <div>
+                    <label htmlFor="home-contact-name" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
+                      Full Name *
+                    </label>
+                    <input 
+                      id="home-contact-name"
+                      className="w-full rounded-lg border border-surface-container bg-surface-container-low px-3.5 py-2.5 outline-primary text-xs" 
+                      placeholder="Your Name" 
+                      value={form.name} 
+                      onChange={(e) => setForm({ ...form, name: e.target.value })} 
+                      required 
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="home-contact-phone" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
+                      Phone Number *
+                    </label>
+                    <input 
+                      id="home-contact-phone"
+                      type="tel"
+                      className="w-full rounded-lg border border-surface-container bg-surface-container-low px-3.5 py-2.5 outline-primary text-xs" 
+                      placeholder="Phone or WhatsApp" 
+                      value={form.phone} 
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })} 
+                      required 
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="home-contact-message" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
+                    Message or Consultation Request *
+                  </label>
+                  <textarea 
+                    id="home-contact-message"
+                    className="min-h-24 w-full rounded-lg border border-surface-container bg-surface-container-low px-3.5 py-2.5 outline-primary text-xs" 
+                    placeholder="How can our clinical team assist you? Describe your questions or preferred appointment schedule..." 
+                    value={form.message} 
+                    onChange={(e) => setForm({ ...form, message: e.target.value })} 
                     required 
                   />
                 </div>
-                <textarea 
-                  className="min-h-24 w-full rounded-lg border border-surface-container bg-surface-container-low px-3.5 py-2.5 outline-primary text-xs" 
-                  placeholder="How can our clinical team assist you? Describe your questions or preferred appointment schedule..." 
-                  value={form.message} 
-                  onChange={(e) => setForm({ ...form, message: e.target.value })} 
-                  required 
-                />
                 <button 
-                  className="rounded-lg bg-primary px-5 py-2.5 font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer text-xs" 
                   type="submit"
+                  disabled={isSubmitting}
+                  className="rounded-lg bg-primary px-5 py-2.5 font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer text-xs disabled:opacity-60" 
                 >
-                  Submit Inquiry
+                  {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
                 </button>
                 {status && <p className="mt-2 text-xs font-medium text-primary">{status}</p>}
               </form>
@@ -610,7 +665,7 @@ function App() {
           <div className="grid gap-8 md:grid-cols-4 pb-8 border-b border-white/10 text-xs">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 font-heading text-lg font-bold">
-                <span className="material-symbols-outlined text-2xl text-secondary-container">dentistry</span>
+                <span className="material-symbols-outlined text-2xl text-secondary-container" aria-hidden="true">dentistry</span>
                 Rumidental Dental Practice
               </div>
               <p className="mt-2 text-white/70 max-w-sm leading-relaxed">
@@ -622,16 +677,16 @@ function App() {
               <h4 className="font-heading font-semibold text-white mb-3 uppercase tracking-wider">Quick Links</h4>
               <ul className="space-y-2 text-white/70">
                 <li>
-                  <button onClick={() => navigateTo('home')} className="hover:text-white transition cursor-pointer">Home</button>
+                  <button type="button" onClick={() => navigateTo('home')} className="hover:text-white transition cursor-pointer">Home</button>
                 </li>
                 <li>
-                  <button onClick={() => navigateTo('services')} className="hover:text-white transition cursor-pointer">Clinical Services</button>
+                  <button type="button" onClick={() => navigateTo('services')} className="hover:text-white transition cursor-pointer">Clinical Services</button>
                 </li>
                 <li>
-                  <button onClick={() => navigateTo('home', 'standards')} className="hover:text-white transition cursor-pointer">Practice Standards</button>
+                  <button type="button" onClick={() => navigateTo('home', 'standards')} className="hover:text-white transition cursor-pointer">Practice Standards</button>
                 </li>
                 <li>
-                  <button onClick={() => navigateTo('home', 'contact')} className="hover:text-white transition cursor-pointer">Contact & Hours</button>
+                  <button type="button" onClick={() => navigateTo('home', 'contact')} className="hover:text-white transition cursor-pointer">Contact & Hours</button>
                 </li>
               </ul>
             </div>
@@ -640,10 +695,10 @@ function App() {
               <h4 className="font-heading font-semibold text-white mb-3 uppercase tracking-wider">Legal & Compliance</h4>
               <ul className="space-y-2 text-white/70">
                 <li>
-                  <button onClick={() => navigateTo('privacy')} className="hover:text-white transition cursor-pointer">Privacy Policy</button>
+                  <button type="button" onClick={() => navigateTo('privacy')} className="hover:text-white transition cursor-pointer">Privacy Policy</button>
                 </li>
                 <li>
-                  <button onClick={() => navigateTo('terms')} className="hover:text-white transition cursor-pointer">Terms & Conditions</button>
+                  <button type="button" onClick={() => navigateTo('terms')} className="hover:text-white transition cursor-pointer">Terms & Conditions</button>
                 </li>
                 <li className="pt-2 text-white/50">
                   Direct Line: +1 (555) 123-4567

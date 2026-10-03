@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from pymongo.errors import PyMongoError
@@ -19,7 +20,7 @@ DEFAULT_SERVICES = [
 
 @api_view(['GET'])
 def health_check(_request):
-    return Response({'status': 'ok', 'service': 'rumidental-api'})
+    return Response({'status': 'ok', 'service': 'rumidental-api'}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -27,20 +28,23 @@ def services(_request):
     try:
         stored_services = list(Service.objects(is_active=True).order_by('order', 'title'))
     except PyMongoError:
-        return Response(DEFAULT_SERVICES)
+        return Response(DEFAULT_SERVICES, status=status.HTTP_200_OK)
 
     if not stored_services:
-        return Response(DEFAULT_SERVICES)
+        return Response(DEFAULT_SERVICES, status=status.HTTP_200_OK)
 
-    return Response([
-        {
-            'id': str(service.id),
-            'icon': service.icon,
-            'title': service.title,
-            'description': service.description,
-        }
-        for service in stored_services
-    ])
+    return Response(
+        [
+            {
+                'id': str(service.id),
+                'icon': service.icon,
+                'title': service.title,
+                'description': service.description,
+            }
+            for service in stored_services
+        ],
+        status=status.HTTP_200_OK,
+    )
 
 
 @api_view(['POST'])
@@ -56,17 +60,24 @@ def contact_request(request):
     email = str(raw_email).strip() if raw_email else None
 
     if not name or not phone or not message:
-        return Response({'detail': 'Name, phone, and message are required.'}, status=400)
+        return Response(
+            {'detail': 'Name, phone, and message are required.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     if len(name) > 120 or len(phone) > 40 or len(message) > 5000:
-        return Response({'detail': 'Input exceeds maximum allowed length.'}, status=400)
+        return Response(
+            {'detail': 'Input exceeds maximum allowed length.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     try:
         contact = ContactRequest(name=name, phone=phone, email=email, message=message)
         contact.save()
     except PyMongoError:
-        return Response({'detail': 'MongoDB is not available.'}, status=503)
+        return Response(
+            {'detail': 'MongoDB is not available.'},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
 
-    return Response({'id': str(contact.id), 'status': 'received'}, status=201)
-
-# Create your views here.
+    return Response({'id': str(contact.id), 'status': 'received'}, status=status.HTTP_201_CREATED)

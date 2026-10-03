@@ -1,224 +1,222 @@
 export const SERVICES_DATA = [
   {
-    id: 'general-consultation',
-    icon: 'dentistry',
-    title: 'Comprehensive Dental Consultation',
-    category: 'General Dentistry',
-    shortDescription: 'In-depth clinical evaluation with a certified dental specialist for diagnosis, symptom review, and structured treatment planning.',
-    fullDescription: 'Consult directly with an experienced dental specialist. Whether addressing localized discomfort, gum sensitivity, or planning restorative dental work, our practitioners evaluate your symptoms, explain diagnostic findings clearly, and provide a personalized clinical care roadmap.',
-    duration: '20 to 30 Minutes',
-    platform: 'Clinical Video Session or In-Office',
-    priceEstimate: 'Standard Consultation Rate',
+    id: 'virtual-consultation',
+    icon: 'video_camera_front',
+    title: 'Virtual Dental Consultation',
+    category: 'General & Emergency',
+    shortDescription: '1-on-1 live HD video consultation with a certified dental specialist for oral exams, symptom analysis, and instant digital diagnosis.',
+    fullDescription: 'Connect face-to-face with an experienced dentist from the comfort of your home. Whether you are experiencing sudden tooth pain, swollen gums, or tooth sensitivity, our dentist will conduct a visual assessment, diagnose the issue, and provide an official digital treatment roadmap and necessary e-prescriptions.',
+    duration: '20 - 30 mins Live Video',
+    platform: 'Zoom / Google Meet / WhatsApp Video',
+    priceEstimate: '$35 / session',
     highlights: [
-      'Comprehensive symptom and oral health assessment',
-      'Digital prescription sent to your designated pharmacy when indicated',
-      'Personalized clinical care plan and itemized treatment options',
-      'Convenient scheduling with verified dental practitioners'
+      'Live HD video assessment with licensed dentist',
+      'Electronic prescription (e-Rx) sent to your pharmacy',
+      'Personalized digital care plan in PDF',
+      'Same-day appointment slots available'
     ],
     consultationSteps: [
-      'Submit your appointment request with preferred time and platform',
-      'Provide basic symptom history and any previous dental notes',
-      'Attend consultation with the dental practitioner',
-      'Receive official diagnosis summary and care plan'
+      'Book your slot and select your preferred video platform',
+      'Upload smile/symptom photos or dental history (optional)',
+      'Join secure 1-on-1 video call with the dentist',
+      'Receive official diagnosis, prescription, and treatment summary'
     ],
-    idealFor: 'Patients seeking direct clinical advice for toothaches, sensitivity, gum irritation, or preliminary consultation before in-clinic treatment.'
+    idealFor: 'Anyone experiencing toothache, sensitive teeth, mouth sores, bleeding gums, or seeking professional medical advice before visiting a clinic in person.'
   },
   {
     id: 'second-opinion',
     icon: 'policy',
-    title: 'Diagnostic Second Opinion & Scan Review',
-    category: 'Diagnostics & Scans',
-    shortDescription: 'Review of existing dental X-rays, 3D CBCT scans, and proposed treatment estimates by an independent senior practitioner.',
-    fullDescription: 'Before undergoing major dental surgery, implants, or extensive restorative procedures, obtain an independent second opinion. Our senior consultants review your digital radiographs and treatment estimates to evaluate clinical necessity, discuss conservative alternatives, and ensure transparent options.',
-    duration: '24-Hour Review and Discussion',
-    platform: 'Secure File Review and Consultation',
-    priceEstimate: 'Specialist Review Rate',
+    title: 'Digital Second Opinion & Scan Review',
+    category: 'Second Opinion & Scans',
+    shortDescription: 'Upload your dental X-rays, CBCT scans, or treatment quotes from other clinics for an unbiased specialist review.',
+    fullDescription: 'Before committing to invasive procedures or costly implants and root canals, get an independent, unbiased second opinion. Our senior consultants review your digital X-rays and treatment quotes to confirm if the procedure is necessary, offer conservative alternatives, and verify pricing fairness.',
+    duration: '24-Hour Review + 20 mins Video Debrief',
+    platform: 'Secure File Portal & Video Call',
+    priceEstimate: '$49 / comprehensive review',
     highlights: [
-      'Detailed review of digital radiographs and 3D imaging',
-      'Independent assessment of treatment necessity and scope',
-      'Discussion of conservative and minimally invasive alternatives',
-      'Written summary report with dedicated discussion time'
+      'Expert analysis of digital X-rays and 3D scans',
+      'Evaluation of proposed treatment necessity & costs',
+      'Exploration of less invasive dental alternatives',
+      'Detailed written PDF report + 1-on-1 video debrief'
     ],
     consultationSteps: [
-      'Submit existing dental radiographs or treatment recommendations',
-      'Specialist evaluates clinical images and case history',
-      'Review written clinical second opinion report',
-      'Discuss findings and treatment questions directly with the doctor'
+      'Submit your X-ray images, scans, or existing doctor recommendations',
+      'Specialist endodontist/implantologist performs in-depth case review',
+      'Receive written second opinion breakdown',
+      'Join 20-minute video discussion to ask all your questions'
     ],
-    idealFor: 'Patients recommended for major procedures such as root canals, extractions, crowns, or dental implants who want an independent clinical review.'
+    idealFor: 'Patients recommended for major procedures (implants, root canals, extractions, braces) wanting a trusted, independent opinion.'
   },
   {
-    id: 'cosmetic-smile-design',
+    id: 'virtual-smile-makeover',
     icon: 'sentiment_very_satisfied',
-    title: 'Cosmetic Dentistry & Aesthetic Planning',
-    category: 'Cosmetic Dentistry',
-    shortDescription: 'Structured aesthetic evaluation for veneers, bonding, and professional whitening tailored to your oral health profile.',
-    fullDescription: 'Explore aesthetic options to enhance your smile with conservative, durable dental solutions. During your consultation, our cosmetic dental practitioner reviews tooth alignment, enamel condition, and aesthetic goals to outline suitable options for porcelain veneers, composite bonding, or clinical whitening.',
-    duration: '30 Minutes Consultation',
-    platform: 'Diagnostic Session',
-    priceEstimate: 'Aesthetic Planning Rate',
+    title: 'Virtual Smile & Cosmetic Assessment',
+    category: 'Cosmetic & Smile Design',
+    shortDescription: 'Upload your smile photos for a digital aesthetic simulation of veneers, bonding, and teeth whitening options.',
+    fullDescription: 'Discover how your dream smile could look before setting foot in a clinic. During this virtual aesthetic consultation, our cosmetic dental specialist evaluates your smile geometry, simulates veneer and whitening transformations, and customizes a smile makeover plan to match your budget.',
+    duration: '30 mins Video Consultation',
+    platform: 'Interactive Screen Share & Video Call',
+    priceEstimate: '$45 / consultation',
     highlights: [
-      'Analysis of smile aesthetics and tooth symmetry',
-      'Evaluation of porcelain veneers, bonding, and whitening',
-      'Transparent breakdown of procedure steps and timelines',
-      'Customized aesthetic treatment roadmap'
+      'Digital before/after smile simulation preview',
+      'Custom cosmetic options (veneers, bonding, whitening)',
+      'Itemized transparent price estimates',
+      'Step-by-step treatment timeline breakdown'
     ],
     consultationSteps: [
-      'Submit high-resolution photographs or visit in clinic',
-      'Doctor evaluates enamel structure and aesthetic proportions',
-      'Review clinical options and material choices',
-      'Receive detailed treatment plan with step-by-step phases'
+      'Upload close-up photos of your smile and teeth',
+      'Dentist prepares digital simulation preview',
+      'Join live video call with screen-share to review options',
+      'Receive customized aesthetic plan and clinic referral'
     ],
-    idealFor: 'Patients interested in whitening, repairing chipped or discolored teeth, closing gaps, or porcelain veneers.'
+    idealFor: 'Individuals interested in teeth whitening, composite bonding, porcelain veneers, or repairing chipped and discolored front teeth.'
   },
   {
-    id: 'orthodontic-tracking',
+    id: 'remote-aligner-tracking',
     icon: 'straighten',
-    title: 'Orthodontic & Clear Aligner Assessment',
-    category: 'Orthodontics',
-    shortDescription: 'Preliminary alignment evaluations and ongoing progress check-ins for orthodontic treatments and clear aligner therapy.',
-    fullDescription: 'Evaluate your suitability for clear aligners or monitor ongoing teeth straightening progress. Our orthodontic practitioners examine dental alignment, bite relationships, and progress photos to guide treatment stages and maintain optimal dental health.',
-    duration: '20 Minutes Check-in',
-    platform: 'Consultation & Review',
-    priceEstimate: 'Orthodontic Assessment Rate',
+    title: 'Clear Aligners & Orthodontic Tele-Tracking',
+    category: 'Orthodontic & Aligners',
+    shortDescription: 'Remote tracking and progress reviews for clear aligners and braces patients without frequent clinic visits.',
+    fullDescription: 'Save time and monitor your teeth straightening journey from anywhere. Check in with your orthodontist virtually, review teeth movement progression through photo updates, verify tray fitting accuracy, and receive authorization for your next aligner stages.',
+    duration: '15 - 20 mins Check-in',
+    platform: 'Video Call & Photo Upload',
+    priceEstimate: '$30 / check-in',
     highlights: [
-      'Evaluation of tooth crowding, spacing, and bite alignment',
-      'Guidance on clear aligners versus traditional orthodontic appliances',
-      'Routine progress tracking for active aligner patients',
-      'Retention protocol review after alignment completion'
+      'Virtual aligner fit & tracking evaluation',
+      'Direct guidance from certified orthodontist',
+      'Eliminates unnecessary in-person clinic travel',
+      'Progress comparison with 3D treatment plan'
     ],
     consultationSteps: [
-      'Submit alignment photos or attend diagnostic exam',
-      'Practitioner reviews tooth movement and tray fit',
-      'Discuss bite comfort, wear duration, and adjustments',
-      'Receive progression authorization for the next stage'
+      'Take photos wearing your current aligner trays',
+      'Orthodontist inspects tracking and tooth alignment',
+      'Discuss bite comfort, wear time, and any pressure points',
+      'Receive approval to transition to the next tray set'
     ],
-    idealFor: 'Individuals considering clear aligners or patients needing regular progress monitoring without unnecessary travel.'
+    idealFor: 'Aligner patients, retained orthodontic cases, and anyone considering clear aligners wanting a preliminary eligibility assessment.'
   },
   {
     id: 'emergency-triage',
     icon: 'emergency',
-    title: 'Dental Emergency Triage & Pain Management',
-    category: 'Emergency Care',
-    shortDescription: 'Prompt triage assessment for acute toothaches, fractured teeth, oral swelling, and urgent prescription coordination.',
-    fullDescription: 'Sudden oral pain and dental trauma require prompt, structured attention. Our priority triage service connects you with a dentist who evaluates the severity of inflammation or injury, advises on safe pain management, coordinates urgent prescriptions if indicated, and directs you to immediate in-person clinical care.',
-    duration: 'Priority 15 to 20 Minutes',
-    platform: 'Priority Tele-Triage or In-Clinic',
-    priceEstimate: 'Emergency Triage Rate',
+    title: 'Emergency Teledentistry & Pain Triage',
+    category: 'General & Emergency',
+    shortDescription: 'Immediate same-day virtual triage for acute toothaches, broken teeth, facial swelling, and urgent prescription needs.',
+    fullDescription: 'Dental emergencies happen without warning. Our priority teledentistry triage connects you immediately with a dentist who can assess the severity of trauma or infection, advise on safe pain relief, prescribe antibiotics or analgesics if appropriate, and direct you to urgent local care.',
+    duration: 'Immediate / Priority 15 mins',
+    platform: 'Urgent Video / Voice Call',
+    priceEstimate: '$40 / urgent session',
     highlights: [
-      'Prompt response for acute pain and infection triage',
-      'Safe at-home stabilization advice before clinical arrival',
-      'Electronic prescriptions for antibiotics or pain relief when clinically required',
-      'Direct guidance to emergency dental facilities if surgery is required'
+      'Priority same-day connection within minutes',
+      'Urgent pain management & home stabilization guidance',
+      'Electronic prescriptions for antibiotics / analgesics',
+      'Infection risk triage & hospital direction if needed'
     ],
     consultationSteps: [
-      'Submit emergency contact request with description of pain',
-      'Direct connection with an on-call dental practitioner',
-      'Visual triage of swelling, trauma, or fractured tooth',
-      'Immediate action plan, prescription, or clinical referral'
+      'Request priority emergency consultation',
+      'Immediate connection with on-call dentist',
+      'Visual exam of infection, bleeding, or fractured tooth',
+      'Immediate prescription & emergency action plan'
     ],
-    idealFor: 'Patients experiencing severe acute toothaches, dental trauma, crown loss, post-operative swelling, or bleeding.'
+    idealFor: 'Severe sudden toothache, broken crowns, dental abscess, post-extraction complications, bleeding gums, or trauma.'
   },
   {
     id: 'pediatric-guidance',
     icon: 'child_care',
-    title: 'Pediatric Dental Consultation & Guidance',
-    category: 'Family Dentistry',
-    shortDescription: 'Specialized consultations for parents regarding early childhood oral hygiene, teething, cavity prevention, and habit guidance.',
-    fullDescription: 'Support your child’s dental development with gentle, expert guidance. Our pediatric dental advisors assist parents with managing infant teething discomfort, preventing early childhood caries, addressing thumb-sucking habits, and establishing lifelong positive brushing routines.',
-    duration: '25 Minutes',
-    platform: 'Parent Consultation Session',
-    priceEstimate: 'Family Guidance Rate',
+    title: 'Pediatric Dental Tele-Guidance for Parents',
+    category: 'Pediatric & Family',
+    shortDescription: 'Virtual consultations for parents regarding infant teething, early decay prevention, thumb-sucking, and child oral habits.',
+    fullDescription: 'Get gentle, expert pediatric dental guidance without the stress of taking an anxious toddler to a clinic. Our pediatric dental advisors help parents manage teething discomfort, bottle rot prevention, tongue ties, speech/bite alignment, and building positive brushing habits.',
+    duration: '25 mins Video Call',
+    platform: 'Family Friendly Video Session',
+    priceEstimate: '$35 / session',
     highlights: [
-      'Pediatric dental development assessment',
-      'Evidence-based soothing guidance for teething discomfort',
-      'Dietary and hygiene strategies to prevent early childhood decay',
-      'Practical coaching for positive brushing routines'
+      'Compassionate pediatric specialist guidance',
+      'Teething relief strategies & safe soothing methods',
+      'Nutritional counseling to prevent childhood cavities',
+      'Stress-free habit transition (pacifiers, thumb-sucking)'
     ],
     consultationSteps: [
-      'Schedule a consultation time fitting your family schedule',
-      'Discuss child oral symptoms, milestones, and questions',
-      'Practitioner provides tailored pediatric recommendations',
-      'Receive actionable daily care summary'
+      'Schedule a convenient time around your child’s routine',
+      'Discuss developmental milestones, diet, and symptoms',
+      'Dentist provides step-by-step parenting recommendations',
+      'Receive child oral care guide and age-appropriate routine'
     ],
-    idealFor: 'Parents of infants, toddlers, and young children seeking professional answers on oral development and cavity prevention.'
+    idealFor: 'Parents of infants, toddlers, and young children seeking professional dental answers from home.'
   },
   {
     id: 'post-op-followup',
     icon: 'healing',
-    title: 'Post-Procedure Recovery Review',
-    category: 'General Dentistry',
-    shortDescription: 'Scheduled recovery check-ins after extractions, endodontic therapy, periodontal treatments, or implant procedures.',
-    fullDescription: 'Verify that your surgical site and surrounding tissues are healing as expected. Connect with your practitioner to review tissue recovery, evaluate swelling resolution, and receive guidance on dietary adjustments, medications, and healing milestones.',
-    duration: '15 Minutes Review',
-    platform: 'Follow-Up Review',
-    priceEstimate: 'Routine Follow-up',
+    title: 'Post-Procedure Virtual Follow-Up',
+    category: 'General & Emergency',
+    shortDescription: 'Remote recovery check-ins after tooth extractions, root canals, bone grafts, or dental implants.',
+    fullDescription: 'Ensure your surgical site or restoration is healing perfectly without traveling back to the clinic. Show your healing tissue to the doctor via high-definition camera, review swelling resolution, and get instant answers regarding diet, medications, and healing milestones.',
+    duration: '15 mins Video Call',
+    platform: 'Video Checkup',
+    priceEstimate: '$25 / check-in (Free for our clinic patients)',
     highlights: [
-      'Visual evaluation of surgical site and healing tissue',
-      'Assessment of post-operative comfort and recovery timeline',
-      'Adjustment of medication guidance if clinically necessary',
-      'Confirmation of full tissue recovery and resumption of normal diet'
+      'High-res visual inspection of healing tissue',
+      'Evaluation of post-operative swelling and pain levels',
+      'Adjustment of antibiotics or pain relief prescriptions',
+      'Confirmation of full tissue recovery'
     ],
     consultationSteps: [
-      'Connect for your scheduled post-procedure check-in',
-      'Doctor inspects the surgical site and discusses symptoms',
+      'Connect via video in good lighting',
+      'Doctor inspects surgical site and suture condition',
       'Review healing progress and daily comfort',
-      'Receive clinical clearance for standard activity'
+      'Receive clearance for normal diet and activity'
     ],
-    idealFor: 'Patients recovering from wisdom tooth extractions, root canal treatments, deep cleanings, or implant placements.'
+    idealFor: 'Patients recovering from wisdom tooth removal, root canal therapy, crown placements, or implant surgeries.'
   },
   {
-    id: 'preventive-hygiene',
+    id: 'hygiene-coaching',
     icon: 'clean_hands',
-    title: 'Preventive Oral Hygiene & Care Coaching',
-    category: 'Preventive Care',
-    shortDescription: 'Professional coaching on proper brushing techniques, flossing, enamel protection, and personalized dental product selection.',
-    fullDescription: 'Improve your daily oral care routine with structured, professional coaching. Our dental hygiene specialists provide feedback on brushing and interdental cleaning methods, recommend suitable oral care tools for your mouth, and offer dietary tips to protect enamel against acid erosion.',
-    duration: '25 Minutes',
-    platform: 'Hygiene Coaching Session',
-    priceEstimate: 'Hygiene Coaching Rate',
+    title: 'Preventive Oral Hygiene & Diet Coaching',
+    category: 'Pediatric & Family',
+    shortDescription: 'Personalized virtual coaching on brushing techniques, flossing routines, enamel protection, and halitosis elimination.',
+    fullDescription: 'Upgrade your daily oral hygiene routine with personalized 1-on-1 coaching. Our dental hygienists inspect your brushing and flossing technique on camera, recommend the ideal toothbrushes and water flossers for your mouth, and create a remineralization diet plan.',
+    duration: '30 mins Interactive Workshop',
+    platform: 'Interactive 1-on-1 Video Workshop',
+    priceEstimate: '$30 / session',
     highlights: [
-      'Practical demonstration of effective brushing and flossing techniques',
-      'Personalized recommendations for toothbrushes, flossers, and toothpastes',
-      'Enamel protection and acid erosion prevention advice',
-      'Customized daily oral hygiene checklist'
+      'Live demonstration and technique feedback on camera',
+      'Personalized oral care product recommendations',
+      'Custom plan for bad breath and plaque prevention',
+      'Acid-erosion and enamel strengthening dietary tips'
     ],
     consultationSteps: [
-      'Schedule your hygiene coaching session',
-      'Practitioner reviews current oral care habits and concerns',
-      'Demonstration of proper interdental cleaning and brushing',
-      'Receive custom care recommendations and routine guide'
+      'Bring your current toothbrush and dental products to the call',
+      'Hygienist reviews your current habits and areas of concern',
+      'Interactive demonstration of modified Bass brushing & flossing',
+      'Receive custom product list and habit checklist'
     ],
-    idealFor: 'Anyone looking to maintain healthy gums, prevent cavities, and select the most effective oral care products for their needs.'
+    idealFor: 'Anyone wanting fresher breath, healthier pink gums, cavity prevention, and professional guidance on dental products.'
   }
 ]
 
 export const SERVICE_CATEGORIES = [
-  'All Services',
-  'General Dentistry',
-  'Diagnostics & Scans',
-  'Cosmetic Dentistry',
-  'Orthodontics',
-  'Emergency Care',
-  'Family Dentistry',
-  'Preventive Care'
+  'All Online Services',
+  'General & Emergency',
+  'Second Opinion & Scans',
+  'Cosmetic & Smile Design',
+  'Orthodontic & Aligners',
+  'Pediatric & Family'
 ]
 
 export const SERVICES_FAQ = [
   {
-    q: 'How does a dental consultation work?',
-    a: 'You select your consultation topic, choose a convenient date and time, and submit your request. During the session, our certified dental practitioner discusses your symptoms, reviews any uploaded radiographs or photographs, provides a diagnosis and clinical explanation, and outlines your treatment options and any necessary digital prescriptions.'
+    q: 'How does an online dental consultation work?',
+    a: 'You simply choose your consultation type, pick a convenient time, and select your preferred platform (Zoom, Google Meet, or WhatsApp Video). During the call, our certified dentist will speak with you, inspect your teeth on camera, review any uploaded X-rays or photos, provide an accurate diagnosis, and send your treatment plan and digital prescription directly to your phone or email.'
   },
   {
-    q: 'Can a dentist issue prescriptions following a consultation?',
-    a: 'Yes. When clinically indicated and appropriate under applicable regulations, our licensed practitioners can issue electronic prescriptions for pain management, antibiotics, or therapeutic mouthwashes directly to your licensed local pharmacy.'
+    q: 'Can a dentist prescribe medication through an online consultation?',
+    a: 'Yes! When medically indicated, our licensed dentists can issue valid electronic prescriptions for antibiotics, therapeutic mouthwashes, and pain relief medications directly to your local pharmacy.'
   },
   {
-    q: 'What should I prepare before my consultation?',
-    a: 'We recommend preparing in a quiet, well-lit room with a device featuring a functional camera and microphone. If you possess recent dental X-rays, treatment notes, or clear photographs of the area of concern, you can upload them during the booking process or share them during your session.'
+    q: 'What equipment or preparation do I need for the video call?',
+    a: 'You only need a smartphone, tablet, or laptop with a working camera and microphone, good lighting, and an internet connection. If you have dental X-rays, photos of your teeth, or previous treatment notes, you can upload or share them during the session.'
   },
   {
-    q: 'What occurs if my condition requires in-person clinical treatment?',
-    a: 'If our evaluating dentist determines that you require hands-on physical treatment (such as a filling, extraction, deep cleaning, or crown placement), you will receive a structured clinical summary and triage guidance, with recommendations on next clinical steps.'
+    q: 'What if my condition requires an in-person dental procedure?',
+    a: 'If our dentist determines during your virtual consultation that you require hands-on clinical treatment (such as a filling, extraction, or deep cleaning), we will provide you with a clear triage report, emergency stabilization guidance, and help connect you with trusted local clinical providers.'
   }
 ]

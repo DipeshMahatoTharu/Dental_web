@@ -2,11 +2,39 @@ import { useState, useMemo } from 'react'
 import { SERVICES_DATA, SERVICE_CATEGORIES, SERVICES_FAQ } from '../data/servicesData'
 import { ServiceModal } from '../components/ServiceModal'
 
+const CARE_PROCESS_STEPS = [
+  {
+    step: '01',
+    icon: 'calendar_month',
+    title: 'Schedule Appointment',
+    desc: 'Select your preferred dental service and convenient schedule.'
+  },
+  {
+    step: '02',
+    icon: 'description',
+    title: 'Clinical Case Review',
+    desc: 'Submit dental history, symptoms, or existing radiographs for preparation.'
+  },
+  {
+    step: '03',
+    icon: 'medical_services',
+    title: 'Doctor Consultation',
+    desc: 'Direct consultation with a licensed dentist for examination and diagnosis.'
+  },
+  {
+    step: '04',
+    icon: 'assignment_turned_in',
+    title: 'Treatment & Care Plan',
+    desc: 'Receive clear care guidance, valid prescriptions, or procedural scheduling.'
+  }
+]
+
 export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSelectedService = null }) {
   const [selectedCategory, setSelectedCategory] = useState('All Services')
   const [searchQuery, setSearchQuery] = useState('')
   const [modalService, setModalService] = useState(initialSelectedService)
   const [openFaq, setOpenFaq] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   // Dedicated consultation booking form state
   const [bookingForm, setBookingForm] = useState({
@@ -14,20 +42,22 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
     phone: '',
     email: '',
     service: 'Comprehensive Dental Consultation',
-    platform: 'In-Office or Video Call',
+    platform: 'In-Office Clinic Visit',
     preferredTime: 'Morning (09:00 AM - 12:00 PM)',
     message: ''
   })
   const [bookingStatus, setBookingStatus] = useState('')
 
   const filteredServices = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
     return SERVICES_DATA.filter((service) => {
       const matchesCategory =
         selectedCategory === 'All Services' || service.category === selectedCategory
       const matchesSearch =
-        service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        service.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        service.category.toLowerCase().includes(searchQuery.toLowerCase())
+        !query ||
+        service.title.toLowerCase().includes(query) ||
+        service.shortDescription.toLowerCase().includes(query) ||
+        service.category.toLowerCase().includes(query)
       return matchesCategory && matchesSearch
     })
   }, [selectedCategory, searchQuery])
@@ -48,16 +78,17 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
   async function handleBookingSubmit(e) {
     e.preventDefault()
+    setIsSubmitting(true)
     setBookingStatus('Submitting your consultation request...')
     try {
       const response = await fetch('/api/contact/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: bookingForm.name,
-          phone: bookingForm.phone,
-          email: bookingForm.email || undefined,
-          message: `[Service: ${bookingForm.service}] [Format: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message}`
+          name: bookingForm.name.trim(),
+          phone: bookingForm.phone.trim(),
+          email: bookingForm.email.trim() || undefined,
+          message: `[Service: ${bookingForm.service}] [Format: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message.trim()}`
         })
       })
       if (!response.ok) throw new Error('Request failed')
@@ -66,13 +97,15 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         phone: '',
         email: '',
         service: 'Comprehensive Dental Consultation',
-        platform: 'In-Office or Video Call',
+        platform: 'In-Office Clinic Visit',
         preferredTime: 'Morning (09:00 AM - 12:00 PM)',
         message: ''
       })
-      setBookingStatus('Your consultation request has been received. Our clinical team will contact you shortly to confirm the appointment.')
+      setBookingStatus('Your consultation request has been received. Our clinic team will contact you shortly to confirm the appointment.')
     } catch {
-      setBookingStatus('Please call us directly at +1 (555) 123-4567 to book your appointment.')
+      setBookingStatus('Please call us directly at +1 (555) 123-4567 to confirm your appointment.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -81,7 +114,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       {/* Top Banner / Breadcrumb & Hero */}
       <section className="relative overflow-hidden bg-primary py-12 text-white md:py-16">
         <div className="relative mx-auto max-w-7xl px-5 md:px-10">
-          <nav className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/70">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/70">
             <button 
               onClick={() => onNavigate('home')} 
               className="hover:text-white transition flex items-center gap-1 cursor-pointer"
@@ -89,7 +122,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               <span className="material-symbols-outlined text-sm">home</span>
               Home
             </button>
-            <span>/</span>
+            <span aria-hidden="true">/</span>
             <span className="text-secondary-container">Clinical Services</span>
           </nav>
 
@@ -128,8 +161,12 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           {/* Search Bar */}
           <div className="mt-8 max-w-2xl">
             <div className="relative flex items-center">
-              <span className="material-symbols-outlined absolute left-4 text-gray-400">search</span>
+              <label htmlFor="service-search-input" className="sr-only">
+                Search dental services
+              </label>
+              <span className="material-symbols-outlined absolute left-4 text-gray-400" aria-hidden="true">search</span>
               <input
+                id="service-search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -138,8 +175,10 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery('')}
                   className="absolute right-4 text-xs font-bold uppercase text-white/70 hover:text-white cursor-pointer"
+                  aria-label="Clear search query"
                 >
                   Clear
                 </button>
@@ -150,7 +189,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       </section>
 
       {/* Category Filter Pills */}
-      <section className="sticky top-16 z-30 border-b border-surface-container bg-white shadow-xs">
+      <section aria-label="Service categories" className="sticky top-16 z-30 border-b border-surface-container bg-white shadow-xs">
         <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-5 py-3 scrollbar-none md:px-10">
           <span className="text-xs font-bold uppercase tracking-wider text-gray-400 shrink-0 mr-2">
             Categories:
@@ -158,6 +197,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           {SERVICE_CATEGORIES.map((cat) => (
             <button
               key={cat}
+              type="button"
               onClick={() => setSelectedCategory(cat)}
               className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition shrink-0 cursor-pointer ${
                 selectedCategory === cat
@@ -185,6 +225,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
             </div>
             
             <button
+              type="button"
               onClick={() => onNavigate('home')}
               className="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-primary hover:text-primary-container cursor-pointer"
             >
@@ -195,12 +236,13 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
           {filteredServices.length === 0 ? (
             <div className="rounded-xl border border-dashed border-surface-container-highest p-12 text-center bg-white">
-              <span className="material-symbols-outlined text-5xl text-gray-400 mb-3">search_off</span>
+              <span className="material-symbols-outlined text-5xl text-gray-400 mb-3" aria-hidden="true">search_off</span>
               <h3 className="font-heading text-lg font-semibold text-primary">No services match your criteria</h3>
               <p className="mt-2 text-sm text-on-surface-variant">
                 Try adjusting your search terms or selecting another category.
               </p>
               <button
+                type="button"
                 onClick={() => {
                   setSelectedCategory('All Services')
                   setSearchQuery('')
@@ -220,7 +262,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-4">
                       <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-container-low text-primary">
-                        <span className="material-symbols-outlined text-2xl">{service.icon}</span>
+                        <span className="material-symbols-outlined text-2xl" aria-hidden="true">{service.icon}</span>
                       </span>
                       <span className="rounded-sm bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 border border-slate-200">
                         {service.category}
@@ -235,11 +277,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                     </p>
 
                     {/* Highlights */}
-                    {service.highlights && (
+                    {service.highlights && service.highlights.length > 0 && (
                       <div className="mt-4 space-y-1.5 border-t border-surface-container pt-3.5">
-                        {service.highlights.slice(0, 3).map((item, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-xs text-on-surface-variant">
-                            <span className="material-symbols-outlined text-secondary text-sm">check_circle</span>
+                        {service.highlights.slice(0, 3).map((item) => (
+                          <div key={item} className="flex items-center gap-2 text-xs text-on-surface-variant">
+                            <span className="material-symbols-outlined text-secondary text-sm" aria-hidden="true">check_circle</span>
                             <span className="truncate">{item}</span>
                           </div>
                         ))}
@@ -250,7 +292,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   <div className="mt-5 border-t border-surface-container pt-3.5">
                     <div className="flex items-center justify-between text-xs text-gray-500 mb-3.5">
                       <span className="flex items-center gap-1 font-medium">
-                        <span className="material-symbols-outlined text-sm text-primary">schedule</span>
+                        <span className="material-symbols-outlined text-sm text-primary" aria-hidden="true">schedule</span>
                         {service.duration}
                       </span>
                       <span className="font-semibold text-primary">
@@ -260,12 +302,14 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
                     <div className="grid grid-cols-2 gap-2">
                       <button
+                        type="button"
                         onClick={() => setModalService(service)}
                         className="rounded-lg border border-surface-container px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary hover:text-primary transition text-center cursor-pointer"
                       >
                         Clinical Details
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleCardBook(service)}
                         className="rounded-lg bg-primary px-3 py-2 text-xs font-bold uppercase text-white hover:bg-primary-container transition text-center cursor-pointer"
                       >
@@ -286,42 +330,17 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-wider text-secondary">Structured Patient Protocol</span>
             <h2 className="font-heading text-3xl font-bold text-primary mt-1">Our Care Process</h2>
-            <div className="mx-auto mt-3 h-1 w-16 rounded-sm bg-secondary" />
+            <div className="mx-auto mt-3 h-0.5 w-16 bg-secondary" />
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                step: '01',
-                icon: 'calendar_month',
-                title: 'Schedule Appointment',
-                desc: 'Select your preferred dental service and preferred schedule.'
-              },
-              {
-                step: '02',
-                icon: 'description',
-                title: 'Clinical Case Review',
-                desc: 'Submit dental history, symptoms, or existing radiographs for preparation.'
-              },
-              {
-                step: '03',
-                icon: 'medical_services',
-                title: 'Doctor Consultation',
-                desc: 'Direct consultation with a licensed dentist for diagnosis and examination.'
-              },
-              {
-                step: '04',
-                icon: 'assignment_turned_in',
-                title: 'Treatment & Care Plan',
-                desc: 'Receive clear care guidance, valid prescriptions, or procedural scheduling.'
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="relative rounded-xl bg-white p-6 border border-surface-container">
+            {CARE_PROCESS_STEPS.map((item) => (
+              <div key={item.step} className="relative rounded-xl bg-white p-6 border border-surface-container">
                 <span className="text-2xl font-bold text-slate-300 font-heading absolute top-4 right-4">
                   {item.step}
                 </span>
                 <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-white mb-4">
-                  <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                  <span className="material-symbols-outlined text-2xl" aria-hidden="true">{item.icon}</span>
                 </span>
                 <h3 className="font-heading font-bold text-base text-primary">{item.title}</h3>
                 <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">{item.desc}</p>
@@ -337,28 +356,39 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           <div className="text-center mb-8">
             <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Guidance</span>
             <h2 className="font-heading text-3xl font-bold text-primary mt-1">Frequently Asked Questions</h2>
-            <div className="mx-auto mt-3 h-1 w-16 rounded-sm bg-secondary" />
+            <div className="mx-auto mt-3 h-0.5 w-16 bg-secondary" />
           </div>
 
           <div className="space-y-3">
             {SERVICES_FAQ.map((faq, idx) => {
-              const isOpen = openFaq === idx
+              const isOpen = openFaq === faq.q
+              const headerId = `faq-header-${idx}`
+              const panelId = `faq-panel-${idx}`
               return (
                 <div 
-                  key={idx}
+                  key={faq.q}
                   className="rounded-lg border border-surface-container overflow-hidden"
                 >
                   <button
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    id={headerId}
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    onClick={() => setOpenFaq(isOpen ? null : faq.q)}
                     className="w-full flex items-center justify-between p-4 text-left font-semibold text-primary hover:bg-surface-container-low transition cursor-pointer text-sm"
                   >
                     <span>{faq.q}</span>
-                    <span className="material-symbols-outlined text-secondary">
+                    <span className="material-symbols-outlined text-secondary" aria-hidden="true">
                       {isOpen ? 'expand_less' : 'expand_more'}
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-4 pb-4 text-xs leading-relaxed text-on-surface-variant bg-surface-container-low">
+                    <div 
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={headerId}
+                      className="px-4 pb-4 text-xs leading-relaxed text-on-surface-variant bg-surface-container-low"
+                    >
                       {faq.a}
                     </div>
                   )}
@@ -386,10 +416,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
             <form onSubmit={handleBookingSubmit} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="booking-name" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                     Full Name *
                   </label>
                   <input
+                    id="booking-name"
                     type="text"
                     required
                     placeholder="Your Name"
@@ -399,10 +430,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="booking-phone" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                     Phone Number *
                   </label>
                   <input
+                    id="booking-phone"
                     type="tel"
                     required
                     placeholder="+1 (555) 000-0000"
@@ -415,10 +447,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="booking-email" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                     Email Address
                   </label>
                   <input
+                    id="booking-email"
                     type="email"
                     placeholder="patient@example.com"
                     value={bookingForm.email}
@@ -427,10 +460,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="booking-service" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                     Dental Service *
                   </label>
                   <select
+                    id="booking-service"
                     value={bookingForm.service}
                     onChange={(e) => setBookingForm({ ...bookingForm, service: e.target.value })}
                     className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-xs outline-primary focus:bg-white"
@@ -443,15 +477,16 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label htmlFor="booking-platform" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                     Format & Timing
                   </label>
                   <select
+                    id="booking-platform"
                     value={bookingForm.platform}
                     onChange={(e) => setBookingForm({ ...bookingForm, platform: e.target.value })}
                     className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-xs outline-primary focus:bg-white"
                   >
-                    <option value="In-Office Visit">In-Office Clinic Visit</option>
+                    <option value="In-Office Clinic Visit">In-Office Clinic Visit</option>
                     <option value="Clinical Video Consultation">Clinical Video Consultation</option>
                     <option value="Phone Consultation">Telephone Consultation</option>
                   </select>
@@ -459,10 +494,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+                <label htmlFor="booking-message" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                   Symptoms or Reason for Consultation *
                 </label>
                 <textarea
+                  id="booking-message"
                   required
                   rows={3}
                   placeholder="Please describe your symptoms, tooth location, or specific treatment questions..."
@@ -474,9 +510,10 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-primary py-3 font-semibold text-white transition hover:bg-primary-container cursor-pointer text-sm"
+                disabled={isSubmitting}
+                className="w-full rounded-lg bg-primary py-3 font-semibold text-white transition hover:bg-primary-container cursor-pointer text-sm disabled:opacity-60"
               >
-                Submit Consultation Request
+                {isSubmitting ? 'Submitting...' : 'Submit Consultation Request'}
               </button>
 
               {bookingStatus && (
