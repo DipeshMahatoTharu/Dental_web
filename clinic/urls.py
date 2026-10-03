@@ -1,6 +1,12 @@
 from django.urls import path
 
-from .views import chat_message, contact_request, document_upload, health_check, services
+from .views import (
+    chat_message,
+    contact_request,
+    document_upload,
+    health_check,
+    services,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health-check'),
