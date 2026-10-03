@@ -2,6 +2,7 @@ export const SERVICES_DATA = [
   {
     id: 'digital-xray-diagnostics',
     icon: 'radiology',
+    image: '/images/dentist.jpg',
     title: 'Digital X-Ray & Radiograph Diagnostic Review',
     category: 'Digital X-Ray & Radiography',
     shortDescription: 'High-precision evaluation of intraoral bitewing, periapical, and full-jaw digital radiographs for decay, bone loss, and root infections.',
@@ -26,6 +27,7 @@ export const SERVICES_DATA = [
   {
     id: 'cbct-3d-scan-analysis',
     icon: 'view_in_ar',
+    image: '/images/equipment.jpg',
     title: '3D CBCT & Dental Tomography Evaluation',
     category: 'Digital X-Ray & Radiography',
     shortDescription: 'In-depth volumetric analysis of 3D cone-beam computed tomography scans for implant planning, bone density, and nerve mapping.',
@@ -50,6 +52,7 @@ export const SERVICES_DATA = [
   {
     id: 'panoramic-radiograph-triage',
     icon: 'wb_twilight',
+    image: '/images/hero-clinic.jpg',
     title: 'Panoramic OPG Radiograph Full-Mouth Triage',
     category: 'Digital X-Ray & Radiography',
     shortDescription: 'Comprehensive full-mouth overview of upper and lower jaws, TMJ joints, impacted teeth, and asymptomatic cysts.',
@@ -74,6 +77,7 @@ export const SERVICES_DATA = [
   {
     id: 'radiograph-second-opinion',
     icon: 'policy',
+    image: '/images/video-consulting.jpg',
     title: 'Independent X-Ray & Treatment Plan Second Opinion',
     category: 'Digital X-Ray & Radiography',
     shortDescription: 'Unbiased, independent review of external dental X-rays and expensive treatment proposals before committing to invasive surgery.',
@@ -98,6 +102,7 @@ export const SERVICES_DATA = [
   {
     id: 'virtual-consultation',
     icon: 'video_camera_front',
+    image: '/images/video-consulting.jpg',
     title: 'Virtual Dental Consultation & Oral Exam',
     category: 'General & Emergency',
     shortDescription: '1-on-1 live HD video consultation with a certified dental specialist for oral exams, symptom analysis, and digital diagnoses.',
@@ -122,6 +127,7 @@ export const SERVICES_DATA = [
   {
     id: 'emergency-triage',
     icon: 'emergency',
+    image: '/images/equipment.jpg',
     title: 'Emergency Dental Triage & Pain Care',
     category: 'General & Emergency',
     shortDescription: 'Priority same-day virtual triage for acute toothaches, fractured teeth, facial swelling, and urgent prescriptions.',
@@ -146,6 +152,7 @@ export const SERVICES_DATA = [
   {
     id: 'virtual-smile-makeover',
     icon: 'sentiment_very_satisfied',
+    image: '/images/smile-gallery.jpg',
     title: 'Virtual Smile & Cosmetic Assessment',
     category: 'Cosmetic & Smile Design',
     shortDescription: 'Upload smile photos for a digital aesthetic evaluation of veneers, composite bonding, and clinical whitening options.',
@@ -170,6 +177,7 @@ export const SERVICES_DATA = [
   {
     id: 'remote-aligner-tracking',
     icon: 'straighten',
+    image: '/images/aligners.jpg',
     title: 'Clear Aligners & Orthodontic Tele-Tracking',
     category: 'Orthodontic & Aligners',
     shortDescription: 'Remote tracking and progress reviews for clear aligners and braces patients without frequent clinic travel.',
@@ -194,6 +202,7 @@ export const SERVICES_DATA = [
   {
     id: 'pediatric-guidance',
     icon: 'child_care',
+    image: '/images/children-care.jpg',
     title: 'Pediatric Dental Tele-Guidance for Parents',
     category: 'Pediatric & Family',
     shortDescription: 'Virtual consultations for parents regarding infant teething, early decay prevention, and child oral habits.',
@@ -218,6 +227,7 @@ export const SERVICES_DATA = [
   {
     id: 'post-op-followup',
     icon: 'healing',
+    image: '/images/gum-care.jpg',
     title: 'Post-Procedure Virtual Follow-Up',
     category: 'General & Emergency',
     shortDescription: 'Remote recovery check-ins after tooth extractions, root canals, bone grafts, or dental implants.',
