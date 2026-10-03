@@ -10,7 +10,8 @@ import { TermsConditionsPage } from './pages/TermsConditionsPage'
 import { ServiceModal } from './components/ServiceModal'
 import { SERVICES_DATA } from './data/servicesData'
 
-const heroImage = '/images/hero-clinic.jpg'
+const heroClinicImage = '/images/hero-clinic.jpg'
+const dentistImage = '/images/dentist.jpg'
 
 const CLINICAL_PILLARS = [
   {
@@ -412,44 +413,95 @@ export function App() {
 
         {currentPage === 'home' && (
           <div>
-            {/* Hero Section */}
+            {/* Hero Section - Left Aligned Layout */}
             <section className="relative min-h-[75vh] overflow-hidden bg-primary text-white flex items-center">
               <img
-                className="absolute inset-0 h-full w-full object-cover opacity-20"
-                src={heroImage}
+                className="absolute inset-0 h-full w-full object-cover opacity-15"
+                src={heroClinicImage}
                 alt="Modern dental operatory room"
               />
-              <div className="relative mx-auto max-w-7xl px-5 py-16 md:px-10 md:py-24">
-                <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white border border-white/20 mb-4">
-                    <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">verified</span>
-                    Licensed Healthcare Facility
-                  </div>
-                  <h1 className="font-heading text-3xl font-bold leading-tight md:text-5xl">
-                    Comprehensive Dental Care & Diagnostic Precision
-                  </h1>
-                  <p className="mt-4 text-sm leading-relaxed text-white/80 md:text-base">
-                    Rumidental provides preventive dentistry, advanced restorative treatments, and digital radiograph second opinions delivered by certified dental practitioners.
-                  </p>
+              <div className="relative mx-auto w-full max-w-7xl px-5 py-14 md:px-10 md:py-20">
+                <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
                   
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => navigateTo('consultation')}
-                      className="rounded-lg bg-white px-5 py-3 text-xs font-bold uppercase tracking-wider text-primary shadow-xs transition hover:bg-surface-container-low cursor-pointer flex items-center gap-2"
-                    >
-                      <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
-                      Doctor Chat & X-Ray Transmission
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => navigateTo('services')}
-                      className="rounded-lg border border-white/30 bg-white/10 px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-white/20 cursor-pointer flex items-center gap-2"
-                    >
-                      <span>Explore All Services</span>
-                      <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-                    </button>
+                  {/* Left Column Content */}
+                  <div className="lg:col-span-7 text-left">
+                    <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white border border-white/20 mb-4">
+                      <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">verified</span>
+                      Licensed Healthcare Facility
+                    </div>
+                    <h1 className="font-heading text-3xl font-bold leading-tight md:text-5xl lg:text-6xl text-left">
+                      Comprehensive Dental Care & Diagnostic Precision
+                    </h1>
+                    <p className="mt-4 text-sm leading-relaxed text-white/85 md:text-base max-w-2xl text-left">
+                      Rumidental provides preventive dentistry, advanced restorative treatments, and digital radiograph second opinions delivered by certified dental practitioners.
+                    </p>
+                    
+                    <div className="mt-8 flex flex-wrap gap-3 items-center justify-start">
+                      <button
+                        type="button"
+                        onClick={() => navigateTo('consultation')}
+                        className="rounded-lg bg-white px-5 py-3 text-xs font-bold uppercase tracking-wider text-primary shadow-xs transition hover:bg-surface-container-low cursor-pointer flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
+                        Doctor Chat & X-Ray Transmission
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigateTo('services')}
+                        className="rounded-lg border border-white/30 bg-white/10 px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-white/20 cursor-pointer flex items-center gap-2"
+                      >
+                        <span>Explore All Services</span>
+                        <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+                      </button>
+                    </div>
+
+                    {/* Left Quick Highlights */}
+                    <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-white/15 pt-5 text-xs text-white/80">
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-secondary-container text-base" aria-hidden="true">check_circle</span>
+                        <span>Board-Certified Doctors</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-secondary-container text-base" aria-hidden="true">check_circle</span>
+                        <span>Digital Low-Dose Scans</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-secondary-container text-base" aria-hidden="true">check_circle</span>
+                        <span>Same-Day Appointments</span>
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Right Column Clinical Preview Card */}
+                  <div className="lg:col-span-5 hidden lg:block">
+                    <div className="rounded-xl border border-white/20 bg-white/5 p-3 shadow-2xl backdrop-blur-sm">
+                      <div className="relative overflow-hidden rounded-lg">
+                        <img
+                          src={dentistImage}
+                          alt="Senior dentist in modern operatory"
+                          className="h-80 w-full object-cover rounded-lg"
+                        />
+                        <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-md bg-primary/90 backdrop-blur px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white border border-white/20">
+                          <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">verified_user</span>
+                          Certified Clinical Director
+                        </div>
+                      </div>
+                      <div className="p-3 bg-white/10 rounded-lg mt-2.5 border border-white/10 flex items-center justify-between text-xs text-white">
+                        <div>
+                          <strong className="block font-heading text-xs font-bold">Dr. Robert Vance, DDS</strong>
+                          <span className="text-[10px] text-white/70">18+ Years Restorative & Diagnostic Experience</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => navigateTo('about')}
+                          className="rounded-md bg-secondary px-3 py-1.5 text-[11px] font-bold uppercase text-white hover:bg-secondary-container transition cursor-pointer"
+                        >
+                          Doctor Profile
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </section>

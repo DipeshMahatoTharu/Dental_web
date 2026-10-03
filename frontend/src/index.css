@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #f8fafc;
-  --color-primary: #0f3460;
-  --color-primary-container: #16427c;
-  --color-secondary: #0284c7;
-  --color-secondary-container: #e0f2fe;
-  --color-tertiary: #0c1a30;
-  --color-surface: #ffffff;
-  --color-surface-container: #e2e8f0;
-  --color-surface-container-low: #f1f5f9;
+  --color-background: #f8f9ff;
+  --color-primary: #340075;
+  --color-primary-container: #4c1d95;
+  --color-secondary: #006a61;
+  --color-secondary-container: #86f2e4;
+  --color-tertiary: #002943;
+  --color-surface: #f8f9ff;
+  --color-surface-container: #e6eeff;
+  --color-surface-container-low: #eff4ff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-highest: #cbd5e1;
-  --color-on-background: #0f172a;
-  --color-on-surface-variant: #334155;
+  --color-surface-container-highest: #d9e3f6;
+  --color-on-background: #121c2a;
+  --color-on-surface-variant: #4a4452;
   --color-on-primary: #ffffff;
   --color-on-secondary: #ffffff;
   --color-on-tertiary: #ffffff;
@@ -23,8 +23,8 @@
 
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
+  background: #f8f9ff;
+  color: #121c2a;
   font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -44,15 +44,30 @@ html {
   background:
     linear-gradient(
       90deg,
-      rgba(15, 52, 96, 0.95) 0%,
-      rgba(15, 52, 96, 0.85) 45%,
-      rgba(15, 52, 96, 0.4) 100%
+      rgba(248, 249, 255, 0.96) 0%,
+      rgba(248, 249, 255, 0.86) 42%,
+      rgba(248, 249, 255, 0.22) 100%
     );
 }
 
 .hero-photo {
   background:
-    linear-gradient(90deg, #0f3460 0%, rgba(15, 52, 96, 0.75) 50%, rgba(15, 52, 96, 0.2) 100%),
+    linear-gradient(90deg, #f8f9ff 0%, rgba(248, 249, 255, 0.64) 48%, rgba(248, 249, 255, 0.08) 100%),
     url("/images/hero-clinic.jpg") center / cover no-repeat,
-    #0f3460;
+    #f8f9ff;
+}
+
+.reveal {
+  animation: reveal-up 0.72s ease both;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
