@@ -3,18 +3,18 @@ import { SERVICES_DATA, SERVICE_CATEGORIES, SERVICES_FAQ } from '../data/service
 import { ServiceModal } from '../components/ServiceModal'
 
 export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSelectedService = null }) {
-  const [selectedCategory, setSelectedCategory] = useState('All Online Services')
+  const [selectedCategory, setSelectedCategory] = useState('All Services')
   const [searchQuery, setSearchQuery] = useState('')
   const [modalService, setModalService] = useState(initialSelectedService)
   const [openFaq, setOpenFaq] = useState(null)
   
-  // Dedicated online consultation booking form state
+  // Dedicated consultation booking form state
   const [bookingForm, setBookingForm] = useState({
     name: '',
     phone: '',
     email: '',
-    service: 'Virtual Dental Consultation',
-    platform: 'Google Meet',
+    service: 'Comprehensive Dental Consultation',
+    platform: 'In-Office or Video Call',
     preferredTime: 'Morning (09:00 AM - 12:00 PM)',
     message: ''
   })
@@ -23,7 +23,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
   const filteredServices = useMemo(() => {
     return SERVICES_DATA.filter((service) => {
       const matchesCategory =
-        selectedCategory === 'All Online Services' || service.category === selectedCategory
+        selectedCategory === 'All Services' || service.category === selectedCategory
       const matchesSearch =
         service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -36,9 +36,9 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
     setBookingForm((prev) => ({
       ...prev,
       service: service.title,
-      message: `I would like to book a virtual session for ${service.title}.`
+      message: `I would like to schedule a consultation for ${service.title}.`
     }))
-    const formElement = document.getElementById('online-booking-section')
+    const formElement = document.getElementById('booking-section')
     if (formElement) {
       formElement.scrollIntoView({ behavior: 'smooth' })
     } else {
@@ -48,7 +48,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
 
   async function handleBookingSubmit(e) {
     e.preventDefault()
-    setBookingStatus('Submitting your virtual consultation request...')
+    setBookingStatus('Submitting your consultation request...')
     try {
       const response = await fetch('/api/contact/', {
         method: 'POST',
@@ -57,7 +57,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           name: bookingForm.name,
           phone: bookingForm.phone,
           email: bookingForm.email || undefined,
-          message: `[Online Service: ${bookingForm.service}] [Platform: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message}`
+          message: `[Service: ${bookingForm.service}] [Format: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message}`
         })
       })
       if (!response.ok) throw new Error('Request failed')
@@ -65,24 +65,23 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         name: '',
         phone: '',
         email: '',
-        service: 'Virtual Dental Consultation',
-        platform: 'Google Meet',
+        service: 'Comprehensive Dental Consultation',
+        platform: 'In-Office or Video Call',
         preferredTime: 'Morning (09:00 AM - 12:00 PM)',
         message: ''
       })
-      setBookingStatus('Success! Your virtual consultation request is received. Our clinic team will send you the meeting link shortly.')
+      setBookingStatus('Your consultation request has been received. Our clinical team will contact you shortly to confirm the appointment.')
     } catch {
-      setBookingStatus('Please call us directly at +1 (555) 123-4567 while the server is unavailable.')
+      setBookingStatus('Please call us directly at +1 (555) 123-4567 to book your appointment.')
     }
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-background animate-fadeIn">
+    <div className="min-h-screen bg-background text-on-background">
       {/* Top Banner / Breadcrumb & Hero */}
-      <section className="relative overflow-hidden bg-primary py-16 text-white md:py-20">
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
+      <section className="relative overflow-hidden bg-primary py-12 text-white md:py-16">
         <div className="relative mx-auto max-w-7xl px-5 md:px-10">
-          <nav className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/70">
+          <nav className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/70">
             <button 
               onClick={() => onNavigate('home')} 
               className="hover:text-white transition flex items-center gap-1 cursor-pointer"
@@ -91,39 +90,38 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               Home
             </button>
             <span>/</span>
-            <span className="text-secondary-container">Online Services</span>
+            <span className="text-secondary-container">Clinical Services</span>
           </nav>
 
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-secondary-container/20 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-secondary-container border border-secondary-container/30">
-              <span className="h-2 w-2 rounded-full bg-secondary-container animate-ping"></span>
-              100% Online Dental Telehealth & Consultations
+            <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white border border-white/20">
+              Professional Dental Care & Consultations
             </div>
-            <h1 className="mt-4 font-heading text-3xl font-bold leading-tight md:text-5xl lg:text-6xl">
-              Virtual Dental Care & Expert Consultations
+            <h1 className="mt-4 font-heading text-3xl font-bold leading-tight md:text-5xl">
+              Comprehensive Dental Treatments & Consultations
             </h1>
-            <p className="mt-4 text-base leading-7 text-white/80 md:text-lg">
-              Get professional diagnoses, second opinions, digital smile evaluations, and electronic prescriptions directly from certified dentists — without leaving home.
+            <p className="mt-4 text-base leading-7 text-white/80">
+              Explore our full range of clinical dental care, diagnostic second opinions, smile restorations, and patient consultations with certified practitioners.
             </p>
           </div>
 
-          {/* Quick Stats Banner */}
+          {/* Practice Highlights */}
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl border-t border-white/15 pt-6 text-xs text-white/85">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary-container text-xl">videocam</span>
-              <span>HD Video Sessions</span>
+              <span className="material-symbols-outlined text-secondary-container text-xl">verified</span>
+              <span>Certified Specialists</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-secondary-container text-xl">prescriptions</span>
-              <span>Valid e-Prescriptions</span>
+              <span>Legitimate Prescriptions</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary-container text-xl">timer</span>
-              <span>Same-Day Availability</span>
+              <span className="material-symbols-outlined text-secondary-container text-xl">schedule</span>
+              <span>Structured Appointments</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-secondary-container text-xl">lock</span>
-              <span>HIPAA Compliant & Private</span>
+              <span>Confidential & Secure</span>
             </div>
           </div>
 
@@ -135,8 +133,8 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search online services (e.g. video consultation, second opinion, emergency triage, aligners)..."
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-12 py-3.5 text-white placeholder-white/60 backdrop-blur-md outline-none focus:border-secondary-container focus:bg-white/20 transition text-sm"
+                placeholder="Search dental services (e.g. consultation, root canal, second opinion, hygiene, aligners)..."
+                className="w-full rounded-lg border border-white/20 bg-white/10 px-12 py-3 text-white placeholder-white/60 outline-none focus:border-white focus:bg-white/20 transition text-sm"
               />
               {searchQuery && (
                 <button
@@ -152,18 +150,18 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       </section>
 
       {/* Category Filter Pills */}
-      <section className="sticky top-16 z-30 border-b border-surface-container bg-white/95 backdrop-blur shadow-sm">
-        <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-5 py-3.5 scrollbar-none md:px-10">
+      <section className="sticky top-16 z-30 border-b border-surface-container bg-white shadow-xs">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-5 py-3 scrollbar-none md:px-10">
           <span className="text-xs font-bold uppercase tracking-wider text-gray-400 shrink-0 mr-2">
-            Filter:
+            Categories:
           </span>
           {SERVICE_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition shrink-0 cursor-pointer ${
+              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition shrink-0 cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-primary text-white shadow-sm'
+                  ? 'bg-primary text-white'
                   : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
               }`}
             >
@@ -174,15 +172,15 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       </section>
 
       {/* Services Grid */}
-      <section className="py-14 md:py-18">
+      <section className="py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary">
-                {selectedCategory === 'All Online Services' ? 'Available Online Consultations' : selectedCategory}
+                {selectedCategory === 'All Services' ? 'Clinical Services Catalog' : selectedCategory}
               </h2>
               <p className="mt-1 text-sm text-on-surface-variant">
-                Showing {filteredServices.length} online consultation {filteredServices.length === 1 ? 'service' : 'services'}
+                Showing {filteredServices.length} {filteredServices.length === 1 ? 'service' : 'services'}
               </p>
             </div>
             
@@ -196,15 +194,15 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           </div>
 
           {filteredServices.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-surface-container-highest p-12 text-center bg-white">
+            <div className="rounded-xl border border-dashed border-surface-container-highest p-12 text-center bg-white">
               <span className="material-symbols-outlined text-5xl text-gray-400 mb-3">search_off</span>
-              <h3 className="font-heading text-lg font-semibold text-primary">No online services found</h3>
+              <h3 className="font-heading text-lg font-semibold text-primary">No services match your criteria</h3>
               <p className="mt-2 text-sm text-on-surface-variant">
-                Try adjusting your search keywords or selecting another category.
+                Try adjusting your search terms or selecting another category.
               </p>
               <button
                 onClick={() => {
-                  setSelectedCategory('All Online Services')
+                  setSelectedCategory('All Services')
                   setSearchQuery('')
                 }}
                 className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold uppercase text-white hover:bg-primary-container transition cursor-pointer"
@@ -217,19 +215,19 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               {filteredServices.map((service) => (
                 <article
                   key={service.id}
-                  className="group flex flex-col justify-between rounded-2xl border border-surface-container bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-xl"
+                  className="group flex flex-col justify-between rounded-xl border border-surface-container bg-white p-6 shadow-xs hover:border-primary/40 transition duration-150"
                 >
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-4">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-container-low text-primary transition duration-300 group-hover:bg-primary group-hover:text-white shadow-xs">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-container-low text-primary">
                         <span className="material-symbols-outlined text-2xl">{service.icon}</span>
                       </span>
-                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200">
-                        Online Consultation
+                      <span className="rounded-sm bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 border border-slate-200">
+                        {service.category}
                       </span>
                     </div>
 
-                    <h3 className="font-heading text-lg font-bold text-primary group-hover:text-primary-container transition">
+                    <h3 className="font-heading text-lg font-bold text-primary">
                       {service.title}
                     </h3>
                     <p className="mt-2.5 text-xs leading-relaxed text-on-surface-variant">
@@ -252,11 +250,11 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   <div className="mt-5 border-t border-surface-container pt-3.5">
                     <div className="flex items-center justify-between text-xs text-gray-500 mb-3.5">
                       <span className="flex items-center gap-1 font-medium">
-                        <span className="material-symbols-outlined text-sm text-primary">videocam</span>
-                        {service.duration.split(' ')[0]} {service.duration.split(' ')[1]}
+                        <span className="material-symbols-outlined text-sm text-primary">schedule</span>
+                        {service.duration}
                       </span>
-                      <span className="font-bold text-secondary">
-                        {service.priceEstimate.split('/')[0]}
+                      <span className="font-semibold text-primary">
+                        {service.priceEstimate}
                       </span>
                     </div>
 
@@ -265,13 +263,13 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                         onClick={() => setModalService(service)}
                         className="rounded-lg border border-surface-container px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary hover:text-primary transition text-center cursor-pointer"
                       >
-                        Learn More
+                        Clinical Details
                       </button>
                       <button
                         onClick={() => handleCardBook(service)}
-                        className="rounded-lg bg-primary px-3 py-2 text-xs font-bold uppercase text-white hover:bg-primary-container transition text-center shadow-xs cursor-pointer"
+                        className="rounded-lg bg-primary px-3 py-2 text-xs font-bold uppercase text-white hover:bg-primary-container transition text-center cursor-pointer"
                       >
-                        Book Online
+                        Book Service
                       </button>
                     </div>
                   </div>
@@ -282,13 +280,13 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         </div>
       </section>
 
-      {/* How Online Consulting Works */}
-      <section className="bg-surface-container-low py-16">
+      {/* How It Works */}
+      <section className="bg-surface-container-low py-14">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Simple 4-Step Process</span>
-            <h2 className="font-heading text-3xl font-bold text-primary mt-2">How Our Online Consultations Work</h2>
-            <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-secondary" />
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Structured Patient Protocol</span>
+            <h2 className="font-heading text-3xl font-bold text-primary mt-1">Our Care Process</h2>
+            <div className="mx-auto mt-3 h-1 w-16 rounded-sm bg-secondary" />
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -296,33 +294,33 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               {
                 step: '01',
                 icon: 'calendar_month',
-                title: 'Book Your Session',
-                desc: 'Select your preferred online service, date, and meeting platform (Google Meet, Zoom, or WhatsApp).'
+                title: 'Schedule Appointment',
+                desc: 'Select your preferred dental service and preferred schedule.'
               },
               {
                 step: '02',
-                icon: 'upload_file',
-                title: 'Share Info / Scans',
-                desc: 'Upload dental X-rays, smile photos, or describe your symptoms beforehand so the dentist can prepare.'
+                icon: 'description',
+                title: 'Clinical Case Review',
+                desc: 'Submit dental history, symptoms, or existing radiographs for preparation.'
               },
               {
                 step: '03',
-                icon: 'video_chat',
-                title: '1-on-1 Video Call',
-                desc: 'Join your secure video consultation with a senior dentist for a live visual exam and expert diagnosis.'
+                icon: 'medical_services',
+                title: 'Doctor Consultation',
+                desc: 'Direct consultation with a licensed dentist for diagnosis and examination.'
               },
               {
                 step: '04',
                 icon: 'assignment_turned_in',
-                title: 'Rx & Treatment Plan',
-                desc: 'Receive digital prescriptions, itemized second opinion reports, and care recommendations via PDF.'
+                title: 'Treatment & Care Plan',
+                desc: 'Receive clear care guidance, valid prescriptions, or procedural scheduling.'
               }
             ].map((item, idx) => (
-              <div key={idx} className="relative rounded-2xl bg-white p-6 shadow-sm border border-surface-container">
-                <span className="text-3xl font-black text-secondary/20 font-heading absolute top-4 right-4">
+              <div key={idx} className="relative rounded-xl bg-white p-6 border border-surface-container">
+                <span className="text-2xl font-bold text-slate-300 font-heading absolute top-4 right-4">
                   {item.step}
                 </span>
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-white mb-4 shadow-sm">
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-white mb-4">
                   <span className="material-symbols-outlined text-2xl">{item.icon}</span>
                 </span>
                 <h3 className="font-heading font-bold text-base text-primary">{item.title}</h3>
@@ -333,34 +331,34 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         </div>
       </section>
 
-      {/* Frequently Asked Questions */}
-      <section className="py-16 bg-white">
+      {/* FAQ */}
+      <section className="py-14 bg-white">
         <div className="mx-auto max-w-4xl px-5 md:px-10">
-          <div className="text-center mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Telehealth FAQ</span>
-            <h2 className="font-heading text-3xl font-bold text-primary mt-2">Frequently Asked Questions</h2>
-            <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-secondary" />
+          <div className="text-center mb-8">
+            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Guidance</span>
+            <h2 className="font-heading text-3xl font-bold text-primary mt-1">Frequently Asked Questions</h2>
+            <div className="mx-auto mt-3 h-1 w-16 rounded-sm bg-secondary" />
           </div>
 
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             {SERVICES_FAQ.map((faq, idx) => {
               const isOpen = openFaq === idx
               return (
                 <div 
                   key={idx}
-                  className="rounded-xl border border-surface-container overflow-hidden transition"
+                  className="rounded-lg border border-surface-container overflow-hidden"
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between p-4.5 text-left font-semibold text-primary hover:bg-surface-container-low transition cursor-pointer text-sm"
+                    className="w-full flex items-center justify-between p-4 text-left font-semibold text-primary hover:bg-surface-container-low transition cursor-pointer text-sm"
                   >
                     <span>{faq.q}</span>
-                    <span className="material-symbols-outlined text-secondary transition-transform duration-300 transform">
+                    <span className="material-symbols-outlined text-secondary">
                       {isOpen ? 'expand_less' : 'expand_more'}
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 text-xs leading-relaxed text-on-surface-variant bg-surface-container-low/40">
+                    <div className="px-4 pb-4 text-xs leading-relaxed text-on-surface-variant bg-surface-container-low">
                       {faq.a}
                     </div>
                   )}
@@ -371,18 +369,17 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         </div>
       </section>
 
-      {/* Direct Online Booking Form */}
-      <section id="online-booking-section" className="bg-surface-container-low py-16">
+      {/* Direct Booking Form */}
+      <section id="booking-section" className="bg-surface-container-low py-14">
         <div className="mx-auto max-w-4xl px-5 md:px-10">
-          <div className="rounded-2xl bg-white p-8 md:p-12 shadow-xl border border-surface-container">
-            <div className="text-center max-w-xl mx-auto mb-8">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-container/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary">
-                <span className="material-symbols-outlined text-sm">video_camera_front</span>
-                Online Appointment
+          <div className="rounded-xl bg-white p-8 md:p-10 shadow-sm border border-surface-container">
+            <div className="text-center max-w-xl mx-auto mb-6">
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-secondary-container px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">
+                Appointment Desk
               </span>
-              <h2 className="font-heading text-3xl font-bold text-primary mt-2">Book Your Online Consultation</h2>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-2">Request an Appointment</h2>
               <p className="mt-2 text-xs text-on-surface-variant">
-                Select your service and preferred video meeting platform. Our team will email you the direct meeting link and confirmed time.
+                Submit your inquiry and our clinic reception will confirm your appointment details.
               </p>
             </div>
 
@@ -390,20 +387,20 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
-                    Your Full Name *
+                    Full Name *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Alex Morgan"
+                    placeholder="Your Name"
                     value={bookingForm.name}
                     onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-sm outline-primary focus:bg-white"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
-                    Phone / WhatsApp Number *
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
@@ -411,7 +408,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                     placeholder="+1 (555) 000-0000"
                     value={bookingForm.phone}
                     onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-sm outline-primary focus:bg-white"
                   />
                 </div>
               </div>
@@ -419,25 +416,24 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
-                    Email Address *
+                    Email Address
                   </label>
                   <input
                     type="email"
-                    required
-                    placeholder="alex@example.com"
+                    placeholder="patient@example.com"
                     value={bookingForm.email}
                     onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-sm outline-primary focus:bg-white"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
-                    Online Service *
+                    Dental Service *
                   </label>
                   <select
                     value={bookingForm.service}
                     onChange={(e) => setBookingForm({ ...bookingForm, service: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-xs outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-xs outline-primary focus:bg-white"
                   >
                     {SERVICES_DATA.map((s) => (
                       <option key={s.id} value={s.title}>
@@ -448,44 +444,43 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
-                    Video Platform *
+                    Format & Timing
                   </label>
                   <select
                     value={bookingForm.platform}
                     onChange={(e) => setBookingForm({ ...bookingForm, platform: e.target.value })}
-                    className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-xs outline-primary focus:bg-white"
+                    className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-xs outline-primary focus:bg-white"
                   >
-                    <option value="Google Meet">Google Meet (Link sent via email)</option>
-                    <option value="Zoom">Zoom (Meeting ID & Passcode)</option>
-                    <option value="WhatsApp Video">WhatsApp Video Call</option>
-                    <option value="Phone Call">Audio Phone Call</option>
+                    <option value="In-Office Visit">In-Office Clinic Visit</option>
+                    <option value="Clinical Video Consultation">Clinical Video Consultation</option>
+                    <option value="Phone Consultation">Telephone Consultation</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5">
-                  Describe Symptoms, Questions, or Dental History *
+                  Symptoms or Reason for Consultation *
                 </label>
                 <textarea
                   required
                   rows={3}
-                  placeholder="Describe your symptoms, tooth location, pain level, or previous treatments. You can share scans during the call..."
+                  placeholder="Please describe your symptoms, tooth location, or specific treatment questions..."
                   value={bookingForm.message}
                   onChange={(e) => setBookingForm({ ...bookingForm, message: e.target.value })}
-                  className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-4 py-3 text-sm outline-primary focus:bg-white"
+                  className="w-full rounded-lg border border-surface-container bg-surface-container-low px-4 py-2.5 text-sm outline-primary focus:bg-white"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-primary py-3.5 font-semibold text-white shadow-lg transition hover:bg-primary-container cursor-pointer text-sm"
+                className="w-full rounded-lg bg-primary py-3 font-semibold text-white transition hover:bg-primary-container cursor-pointer text-sm"
               >
-                Schedule Virtual Consultation
+                Submit Consultation Request
               </button>
 
               {bookingStatus && (
-                <p className="mt-3 text-center text-xs font-semibold text-secondary">
+                <p className="mt-3 text-center text-xs font-medium text-primary">
                   {bookingStatus}
                 </p>
               )}
