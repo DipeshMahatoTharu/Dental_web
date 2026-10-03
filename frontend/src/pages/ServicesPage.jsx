@@ -13,7 +13,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
     name: '',
     phone: '',
     email: '',
-    service: 'Digital X-Ray & Radiograph Diagnostic Review',
+    service: 'Virtual Dental Consultation',
     platform: 'Google Meet',
     preferredTime: 'Morning (09:00 AM - 12:00 PM)',
     message: ''
@@ -37,7 +37,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
     setBookingForm((prev) => ({
       ...prev,
       service: service.title,
-      message: `I would like to book a clinical evaluation for: ${service.title}.`
+      message: `I would like to book a virtual session for ${service.title}.`
     }))
     const formElement = document.getElementById('online-booking-section')
     if (formElement) {
@@ -50,7 +50,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
   async function handleBookingSubmit(e) {
     e.preventDefault()
     setIsSubmitting(true)
-    setBookingStatus('Submitting your clinical consultation request...')
+    setBookingStatus('Submitting your virtual consultation request...')
     try {
       const response = await fetch('/api/contact/', {
         method: 'POST',
@@ -61,7 +61,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           email: bookingForm.email.trim() || undefined,
           serviceInterest: bookingForm.service,
           preferredTime: bookingForm.preferredTime,
-          message: `[Clinical Service: ${bookingForm.service}] [Platform: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message.trim()}`
+          message: `[Online Service: ${bookingForm.service}] [Platform: ${bookingForm.platform}] [Time: ${bookingForm.preferredTime}] ${bookingForm.message.trim()}`
         })
       })
       if (!response.ok) throw new Error('Request failed')
@@ -69,12 +69,12 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         name: '',
         phone: '',
         email: '',
-        service: 'Digital X-Ray & Radiograph Diagnostic Review',
+        service: 'Virtual Dental Consultation',
         platform: 'Google Meet',
         preferredTime: 'Morning (09:00 AM - 12:00 PM)',
         message: ''
       })
-      setBookingStatus('Success! Your consultation request has been received. Our clinic team will send you the confirmation and meeting details shortly.')
+      setBookingStatus('Success! Your virtual consultation request is received. Our clinic team will send you the meeting link shortly.')
     } catch {
       setBookingStatus('Notice: Please call our clinical reception directly at +1 (555) 123-4567 while digital dispatch queues.')
     } finally {
@@ -97,28 +97,28 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               Home
             </button>
             <span aria-hidden="true">/</span>
-            <span className="text-secondary-container">Clinical Dental Services</span>
+            <span className="text-secondary-container">Online Clinical Services</span>
           </nav>
 
           <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
             {/* Left Content */}
             <div className="lg:col-span-7">
               <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white border border-white/20">
-                <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">radiology</span>
-                Digital Radiographs & Diagnostic Consultations
+                <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">videocam</span>
+                Online Dental Telehealth & Specialist Consultations
               </div>
               <h1 className="mt-3 font-heading text-2xl font-bold leading-tight md:text-4xl lg:text-5xl">
-                Clinical Services & Digital X-Ray Diagnostics
+                Virtual Dental Care & Diagnostic Consultations
               </h1>
-              <p className="mt-3 text-sm leading-relaxed text-white/85 md:text-base">
-                Transmit your digital dental radiographs, bitewings, panoramic OPG scans, and CBCT tomography for rapid evaluation, emergency triage, and independent specialist second opinions.
+              <p className="mt-3 text-sm leading-relaxed text-white/80 md:text-base">
+                Connect directly with licensed dental surgeons for oral exams, symptom analysis, radiograph review, and official electronic prescriptions without leaving home.
               </p>
 
               {/* Quick Clinical Guarantees */}
               <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-white/15 pt-5 text-xs text-white/85">
                 <div className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">radiology</span>
-                  <span>Digital X-Ray Scans</span>
+                  <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">videocam</span>
+                  <span>HD Video Calls</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">prescriptions</span>
@@ -126,7 +126,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">timer</span>
-                  <span>Same-Day Triage</span>
+                  <span>Same-Day Slots</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-secondary-container text-lg" aria-hidden="true">lock</span>
@@ -142,7 +142,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search clinical services (e.g. digital x-ray, cbct scan, panoramic opg, root canal second opinion)..."
+                    placeholder="Search clinical services (e.g. video consultation, second opinion, toothache triage)..."
                     aria-label="Search clinical services"
                     className="w-full rounded-lg border border-white/20 bg-white/10 pl-10 pr-16 py-2.5 text-white placeholder-white/60 outline-none focus:border-secondary-container focus:bg-white/20 transition text-xs md:text-sm"
                   />
@@ -170,7 +170,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                   />
                   <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-md bg-primary/90 backdrop-blur px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white border border-white/20">
                     <span className="material-symbols-outlined text-sm text-secondary-container" aria-hidden="true">videocam</span>
-                    Live Video & X-Ray Consultation
+                    Live Telehealth Consultation
                   </div>
                 </div>
 
@@ -194,7 +194,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         </div>
       </section>
 
-      {/* Category Filter Tabs */}
+      {/* Category Filter Pills */}
       <section className="sticky top-14 z-30 border-b border-surface-container bg-white/95 backdrop-blur shadow-xs">
         <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-5 py-3 scrollbar-none md:px-10">
           <span className="text-xs font-bold uppercase tracking-wider text-gray-500 shrink-0 mr-2">
@@ -217,16 +217,16 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
         </div>
       </section>
 
-      {/* Services Grid with Photos */}
+      {/* Services Grid */}
       <section className="py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary">
-                {selectedCategory === 'All Online Services' ? 'Available Clinical Services & Diagnostics' : selectedCategory}
+                {selectedCategory === 'All Online Services' ? 'Available Clinical Services' : selectedCategory}
               </h2>
               <p className="mt-1 text-xs text-on-surface-variant">
-                Showing {filteredServices.length} {filteredServices.length === 1 ? 'service' : 'services'}
+                Showing {filteredServices.length} online consultation {filteredServices.length === 1 ? 'service' : 'services'}
               </p>
             </div>
             
@@ -263,75 +263,64 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
               {filteredServices.map((service) => (
                 <article
                   key={service.id}
-                  className="flex flex-col justify-between overflow-hidden rounded-xl border border-surface-container bg-white shadow-xs transition hover:border-primary/40 hover:shadow-sm group"
+                  className="flex flex-col justify-between rounded-xl border border-surface-container bg-white p-6 shadow-xs transition hover:border-primary/40 hover:shadow-sm"
                 >
-                  {/* Service Photo Header */}
-                  <div className="relative h-44 w-full overflow-hidden bg-slate-100">
-                    <img
-                      src={service.image || '/images/hero-clinic.jpg'}
-                      alt={service.title}
-                      className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/90 text-white shadow-xs backdrop-blur">
-                        <span className="material-symbols-outlined text-lg" aria-hidden="true">{service.icon}</span>
+                  <div>
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-container-low text-primary shadow-xs">
+                        <span className="material-symbols-outlined text-2xl" aria-hidden="true">{service.icon}</span>
                       </span>
-                      <span className="rounded-md bg-white/95 px-2 py-0.5 text-[10px] font-bold text-primary shadow-xs backdrop-blur">
+                      <span className="rounded-md bg-surface-container px-2 py-0.5 text-[10px] font-bold text-slate-600">
                         {service.category}
                       </span>
                     </div>
+
+                    <h3 className="font-heading text-base font-bold text-primary">
+                      {service.title}
+                    </h3>
+                    <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">
+                      {service.shortDescription}
+                    </p>
+
+                    {/* Highlights */}
+                    {service.highlights && (
+                      <div className="mt-4 space-y-1.5 border-t border-surface-container pt-3">
+                        {service.highlights.slice(0, 3).map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-2 text-xs text-on-surface-variant">
+                            <span className="material-symbols-outlined text-secondary text-sm" aria-hidden="true">check_circle</span>
+                            <span className="truncate">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h3 className="font-heading text-base font-bold text-primary">
-                        {service.title}
-                      </h3>
-                      <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">
-                        {service.shortDescription}
-                      </p>
-
-                      {/* Highlights */}
-                      {service.highlights && (
-                        <div className="mt-4 space-y-1.5 border-t border-surface-container pt-3">
-                          {service.highlights.slice(0, 3).map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-xs text-on-surface-variant">
-                              <span className="material-symbols-outlined text-secondary text-sm shrink-0" aria-hidden="true">check_circle</span>
-                              <span className="truncate">{item}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                  <div className="mt-5 border-t border-surface-container pt-3">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                      <span className="flex items-center gap-1 font-medium">
+                        <span className="material-symbols-outlined text-sm text-primary" aria-hidden="true">videocam</span>
+                        {service.duration.split(' ')[0]} {service.duration.split(' ')[1]}
+                      </span>
+                      <span className="font-bold text-secondary">
+                        {service.priceEstimate.split('/')[0]}
+                      </span>
                     </div>
 
-                    <div className="mt-5 border-t border-surface-container pt-3">
-                      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                        <span className="flex items-center gap-1 font-medium">
-                          <span className="material-symbols-outlined text-sm text-primary" aria-hidden="true">videocam</span>
-                          {service.duration.split(' ')[0]} {service.duration.split(' ')[1]}
-                        </span>
-                        <span className="font-bold text-secondary">
-                          {service.priceEstimate.split('/')[0]}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setModalService(service)}
-                          className="rounded-lg border border-surface-container px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary hover:text-primary transition text-center cursor-pointer"
-                        >
-                          Details
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleCardBook(service)}
-                          className="rounded-lg bg-primary px-3 py-2 text-xs font-bold uppercase text-white hover:bg-primary-container transition text-center shadow-xs cursor-pointer"
-                        >
-                          Book Visit
-                        </button>
-                      </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setModalService(service)}
+                        className="rounded-lg border border-surface-container px-3 py-2 text-xs font-semibold text-on-surface-variant hover:border-primary hover:text-primary transition text-center cursor-pointer"
+                      >
+                        Details
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCardBook(service)}
+                        className="rounded-lg bg-primary px-3 py-2 text-xs font-bold uppercase text-white hover:bg-primary-container transition text-center shadow-xs cursor-pointer"
+                      >
+                        Book Virtual
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -345,35 +334,35 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       <section className="bg-surface-container-low py-14 border-t border-surface-container">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Diagnostic Workflow</span>
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">How Our Diagnostic & Virtual Consultations Work</h2>
+            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Simple 4-Step Process</span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">How Our Virtual Consultations Work</h2>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 step: '01',
-                icon: 'upload_file',
-                title: 'Transmit Radiographs',
-                desc: 'Upload dental X-rays (bitewings, periapical, panoramic OPG, or 3D CBCT scans) to our encrypted portal.'
+                icon: 'calendar_month',
+                title: 'Book Your Session',
+                desc: 'Select your preferred online service, date, and meeting platform (Google Meet, Zoom, or WhatsApp).'
               },
               {
                 step: '02',
-                icon: 'radiology',
-                title: 'Specialist Evaluation',
-                desc: 'Board-certified surgeons examine your radiographs for bone levels, caries, and root vitality.'
+                icon: 'upload_file',
+                title: 'Share Info or Scans',
+                desc: 'Upload dental X-rays, smile photos, or describe your symptoms beforehand so the doctor can prepare.'
               },
               {
                 step: '03',
-                icon: 'forum',
-                title: 'Doctor Live Chat',
-                desc: 'Speak directly with your assigned dental specialist to discuss the findings and ask clinical questions.'
+                icon: 'video_chat',
+                title: '1-on-1 Video Call',
+                desc: 'Join your secure video consultation with a senior dental surgeon for a live visual exam and clinical assessment.'
               },
               {
                 step: '04',
                 icon: 'assignment_turned_in',
-                title: 'Certified Report & Plan',
-                desc: 'Receive digital prescriptions, itemized treatment estimates, and official diagnostic reports in PDF.'
+                title: 'Rx & Care Summary',
+                desc: 'Receive digital e-prescriptions, itemized second opinion reports, and care recommendations via PDF.'
               }
             ].map((item, idx) => (
               <div key={idx} className="relative rounded-xl bg-white p-6 shadow-xs border border-surface-container">
@@ -395,7 +384,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
       <section className="py-14 bg-white">
         <div className="mx-auto max-w-4xl px-5 md:px-10">
           <div className="text-center mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Clinical Guidelines</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Telehealth Guidelines</span>
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mt-1">Frequently Asked Questions</h2>
           </div>
 
@@ -435,12 +424,12 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
           <div className="rounded-xl bg-white p-6 md:p-10 shadow-xs border border-surface-container">
             <div className="text-center max-w-xl mx-auto mb-8">
               <span className="inline-flex items-center gap-1.5 rounded-md bg-secondary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary border border-secondary/20">
-                <span className="material-symbols-outlined text-sm" aria-hidden="true">calendar_month</span>
-                Clinical Appointment
+                <span className="material-symbols-outlined text-sm" aria-hidden="true">video_camera_front</span>
+                Online Appointment
               </span>
-              <h2 className="font-heading text-2xl font-bold text-primary mt-2">Schedule a Consultation & X-Ray Review</h2>
+              <h2 className="font-heading text-2xl font-bold text-primary mt-2">Schedule a Virtual Consultation</h2>
               <p className="mt-1 text-xs text-on-surface-variant">
-                Select your service and preferred consultation format. Our clinical team will confirm your slot and send direct access instructions.
+                Select your service and preferred video meeting platform. Our team will email you the direct meeting link and confirmed time.
               </p>
             </div>
 
@@ -493,7 +482,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                 </div>
                 <div>
                   <label htmlFor="service-book-service" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
-                    Clinical Service *
+                    Online Service *
                   </label>
                   <select
                     id="service-book-service"
@@ -510,7 +499,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                 </div>
                 <div>
                   <label htmlFor="service-book-platform" className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">
-                    Meeting Channel *
+                    Video Platform *
                   </label>
                   <select
                     id="service-book-platform"
@@ -518,7 +507,6 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                     onChange={(e) => setBookingForm({ ...bookingForm, platform: e.target.value })}
                     className="w-full rounded-lg border border-surface-container bg-surface-container-low/30 px-3.5 py-2.5 text-xs outline-primary focus:bg-white"
                   >
-                    <option value="Doctor Portal Stream">Doctor Portal Stream (Encrypted)</option>
                     <option value="Google Meet">Google Meet</option>
                     <option value="Zoom">Zoom</option>
                     <option value="WhatsApp Video">WhatsApp Video</option>
@@ -547,7 +535,7 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
                 disabled={isSubmitting}
                 className="w-full rounded-lg bg-primary py-3 text-xs font-bold uppercase tracking-wider text-white shadow-xs transition hover:bg-primary-container disabled:opacity-60 cursor-pointer"
               >
-                {isSubmitting ? 'Transmitting Booking...' : 'Schedule Clinical Consultation'}
+                {isSubmitting ? 'Transmitting Booking...' : 'Schedule Virtual Consultation'}
               </button>
 
               {bookingStatus && (
@@ -571,3 +559,4 @@ export function ServicesPage({ onNavigate, onSelectServiceForBooking, initialSel
     </div>
   )
 }
+
