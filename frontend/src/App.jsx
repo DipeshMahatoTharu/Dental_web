@@ -4,6 +4,7 @@ import { AboutPage } from './pages/AboutPage'
 import { GalleryPage } from './pages/GalleryPage'
 import { ArticlesPage } from './pages/ArticlesPage'
 import { ContactPage } from './pages/ContactPage'
+import { DoctorConsultationPage } from './pages/DoctorConsultationPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { TermsConditionsPage } from './pages/TermsConditionsPage'
 import { ServiceModal } from './components/ServiceModal'
@@ -67,14 +68,14 @@ function Icon({ children, className = '' }) {
 }
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'services' | 'about' | 'gallery' | 'articles' | 'contact' | 'privacy' | 'terms'
+  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'services' | 'about' | 'gallery' | 'articles' | 'contact' | 'consultation' | 'privacy' | 'terms'
   const [form, setForm] = useState({ name: '', phone: '', message: '' })
   const [status, setStatus] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [selectedHomeModalService, setSelectedHomeModalService] = useState(null)
 
-  // URL hash navigation listener for direct links, bookmarks, and back/forward browser buttons
+  // URL hash navigation listener for direct links, bookmarks, and browser navigation
   useEffect(() => {
     function handleHashChange() {
       const hash = window.location.hash.toLowerCase()
@@ -99,6 +100,9 @@ function App() {
       } else if (hash.includes('contact')) {
         setCurrentPage('contact')
         window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else if (hash.includes('consultation') || hash.includes('portal') || hash.includes('chat') || hash.includes('xray')) {
+        setCurrentPage('consultation')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
         setCurrentPage('home')
         if (hash && hash !== '#' && hash !== '#home') {
@@ -118,7 +122,7 @@ function App() {
 
   function navigateTo(target, sectionId = null) {
     setMobileMenuOpen(false)
-    const validPages = ['services', 'about', 'gallery', 'articles', 'contact', 'privacy', 'terms']
+    const validPages = ['services', 'about', 'gallery', 'articles', 'contact', 'consultation', 'privacy', 'terms']
     if (validPages.includes(target)) {
       window.location.hash = `#/${target}`
       setCurrentPage(target)
@@ -190,7 +194,7 @@ function App() {
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-6 lg:gap-7 md:flex">
+          <div className="hidden items-center gap-5 lg:gap-6 md:flex">
             <button
               type="button"
               onClick={() => navigateTo('home')}
@@ -212,6 +216,18 @@ function App() {
               }`}
             >
               Services
+            </button>
+            <button
+              type="button"
+              onClick={() => navigateTo('consultation')}
+              className={`text-sm font-semibold transition cursor-pointer flex items-center gap-1 ${
+                currentPage === 'consultation'
+                  ? 'text-primary border-b-2 border-primary pb-0.5 font-bold'
+                  : 'text-secondary hover:text-primary'
+              }`}
+            >
+              <span className="material-symbols-outlined text-base" aria-hidden="true">chat</span>
+              Doctor Chat & X-Ray
             </button>
             <button
               type="button"
@@ -259,14 +275,22 @@ function App() {
             </button>
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => navigateTo('consultation')}
+              className="rounded-lg border border-primary/30 bg-surface-container-low px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-primary hover:bg-surface-container transition cursor-pointer flex items-center gap-1.5"
+            >
+              <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
+              Send X-Ray
+            </button>
             <button
               type="button"
               onClick={() => navigateTo('services')}
               className="rounded-lg bg-primary px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer flex items-center gap-1.5"
             >
               <span className="material-symbols-outlined text-base" aria-hidden="true">calendar_month</span>
-              Book Appointment
+              Book Visit
             </button>
           </div>
 
@@ -297,6 +321,16 @@ function App() {
                 }`}
               >
                 Home
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('consultation')}
+                className={`text-left text-sm font-semibold flex items-center gap-2 ${
+                  currentPage === 'consultation' ? 'text-primary font-bold' : 'text-secondary'
+                }`}
+              >
+                <span className="material-symbols-outlined text-base">chat</span>
+                Doctor Chat & X-Ray Transmission
               </button>
               <button
                 type="button"
@@ -357,14 +391,22 @@ function App() {
               >
                 Terms & Conditions
               </button>
-              <button
-                type="button"
-                onClick={() => navigateTo('services')}
-                className="mt-2 text-center rounded-lg bg-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white flex items-center justify-center gap-1.5"
-              >
-                <span className="material-symbols-outlined text-base" aria-hidden="true">calendar_month</span>
-                Book Appointment
-              </button>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <button
+                  type="button"
+                  onClick={() => navigateTo('consultation')}
+                  className="text-center rounded-lg border border-primary/30 py-2.5 text-xs font-bold uppercase tracking-wider text-primary"
+                >
+                  Send X-Ray
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigateTo('services')}
+                  className="text-center rounded-lg bg-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white"
+                >
+                  Book Visit
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -377,6 +419,10 @@ function App() {
             onNavigate={(page) => navigateTo(page)}
             onSelectServiceForBooking={handleSelectServiceForBooking}
           />
+        </main>
+      ) : currentPage === 'consultation' ? (
+        <main className="pt-14">
+          <DoctorConsultationPage onNavigate={(page) => navigateTo(page)} />
         </main>
       ) : currentPage === 'about' ? (
         <main className="pt-14">
@@ -423,11 +469,11 @@ function App() {
                 <div className="mt-7 flex flex-wrap gap-3">
                   <button 
                     type="button"
-                    onClick={() => navigateTo('contact')}
+                    onClick={() => navigateTo('consultation')}
                     className="rounded-lg bg-primary px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-primary-container cursor-pointer flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-lg" aria-hidden="true">calendar_month</span>
-                    Schedule Appointment
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">chat</span>
+                    Upload X-Ray / Doctor Chat
                   </button>
                   <button 
                     type="button"
@@ -438,6 +484,34 @@ function App() {
                     <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
                   </button>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Quick Doctor Consultation Feature Highlight */}
+          <section className="bg-surface-container-low py-10 border-b border-surface-container">
+            <div className="mx-auto max-w-7xl px-5 md:px-10">
+              <div className="rounded-xl bg-white p-6 md:p-8 border border-surface-container shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-white shrink-0">
+                    <span className="material-symbols-outlined text-2xl" aria-hidden="true">upload_file</span>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-secondary">Online Triage Desk</span>
+                    <h3 className="font-heading text-lg font-bold text-primary mt-0.5">Need a Doctor to Review Your Dental X-Ray?</h3>
+                    <p className="text-xs text-on-surface-variant mt-1 max-w-xl">
+                      Upload your digital radiographs or CBCT scans for preliminary evaluation and direct consultation with our licensed dental specialists.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigateTo('consultation')}
+                  className="rounded-lg bg-primary px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-primary-container transition cursor-pointer shrink-0 flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-base" aria-hidden="true">lock</span>
+                  Open Patient Portal
+                </button>
               </div>
             </div>
           </section>
@@ -754,6 +828,9 @@ function App() {
               <ul className="space-y-2 text-white/70">
                 <li>
                   <button type="button" onClick={() => navigateTo('home')} className="hover:text-white transition cursor-pointer">Home</button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => navigateTo('consultation')} className="hover:text-white transition text-secondary-container font-semibold cursor-pointer">Doctor Chat & X-Ray</button>
                 </li>
                 <li>
                   <button type="button" onClick={() => navigateTo('services')} className="hover:text-white transition cursor-pointer">Clinical Services</button>
